@@ -1,6 +1,6 @@
 'use strict';
 /*
- * Kho nhạc Tết — 3 album, tổng 42 bài.
+ * Kho nhạc Tết — 3 album, tổng 50 bài.
  *
  * Mỗi album là MỘT file mix liền mạch, nên mỗi bài được đánh dấu bằng mốc
  * thời gian bắt đầu (giây, tính từ đầu file).
@@ -71,22 +71,23 @@ const XUAN_CHILL = [
 ];
 
 /* ------------------------------------------------------------------ */
-/* Album 3: Playlist Nhạc Tết (7 bài)                                  */
-/*                                                                     */
-/* File này crossfade liền mạch nên chỉ dò được 7 mốc ở ngưỡng -20dB.  */
-/* Cố tình KHÔNG chia đều cho đủ 9 tên, vì mốc sai sẽ làm bài bị cắt    */
-/* giữa chừng — nghe khó chịu hơn là ít bài mà trọn vẹn.               */
+/* Album 3: Playlist Nhạc Tết (9 bài)                                  */
+/* Mốc đối chiếu từ file gốc: điểm chuyển âm sắc, khoảng lặng và       */
+/* so khớp âm thanh với album Bùi Công Nam; không lấy mọi khoảng lặng */
+/* làm đầu bài vì có khoảng nghỉ ngay trong một bài.                  */
 /* ------------------------------------------------------------------ */
 
 /* prettier-ignore */
 const TET_PLAYLIST = [
   { title: 'Tết Đong Đầy',                          start: 0 },
-  { title: 'Tết Đi Lên Cùng Nhau',                  start: 595 },
-  { title: 'Tết Này Con Sẽ Về',                     start: 794 },
-  { title: 'Đi Về Nhà',                             start: 868 },
-  { title: 'Gieo Quẻ',                              start: 1100 },
-  { title: 'Làm Gì Phải Hốt',                       start: 1186 },
-  { title: 'Năm Qua Đã Làm Gì',                     start: 1716 },
+  { title: 'Tết Đi Lên Cùng Nhau',                  start: 190.6 },
+  { title: 'Tết Này Con Sẽ Về',                     start: 403.4 },
+  { title: 'Đi Về Nhà',                             start: 597.07 },
+  { title: 'Gieo Quẻ',                              start: 794.01 },
+  { title: 'Làm Gì Phải Hốt',                       start: 917.8 },
+  { title: 'Năm Qua Đã Làm Gì',                     start: 1083.7 },
+  { title: 'Chuyện Cũ Bỏ Qua',                      start: 1306.8 },
+  { title: 'Đi Để Trở Về 2',                        start: 1497.16 },
 ];
 
 /* ------------------------------------------------------------------ */
@@ -98,18 +99,21 @@ const ALBUMS = [
     id: 'bui-cong-nam',
     name: 'Tuyển tập Bùi Công Nam',
     file: 'tet-mix.opus',
+    duration: 4572.39,
     songs: BUI_CONG_NAM,
   },
   {
     id: 'xuan-chill',
     name: 'Nhạc Xuân Chill 2027',
     file: 'xuan-chill.opus',
+    duration: 4329.07,
     songs: XUAN_CHILL,
   },
   {
     id: 'tet-playlist',
     name: 'Playlist Nhạc Tết',
     file: 'tet-playlist.opus',
+    duration: 1765.49,
     songs: TET_PLAYLIST,
   },
 ];
@@ -120,9 +124,10 @@ const ALBUMS = [
  */
 const SONGS = [];
 for (const album of ALBUMS) {
-  for (const s of album.songs) {
-    SONGS.push({ ...s, albumId: album.id, albumName: album.name, file: album.file });
-  }
+  album.songs.forEach((s, i) => {
+    const end = album.songs[i + 1]?.start ?? album.duration;
+    SONGS.push({ ...s, end, albumId: album.id, albumName: album.name, file: album.file });
+  });
 }
 
 module.exports = { ALBUMS, SONGS, BUI_CONG_NAM, XUAN_CHILL, TET_PLAYLIST };

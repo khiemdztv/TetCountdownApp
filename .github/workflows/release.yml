@@ -45,7 +45,7 @@ jobs:
             const release = await github.rest.repos.createRelease({
               ...context.repo, tag_name: tag, name: 'TetCountdownApp ' + tag,
               draft: true, prerelease: false,
-              body: "TetCountdownApp v1.0.1\n\n- Đổi tên ứng dụng thành TetCountdownApp.\n- Icon dê chibi mới cho cửa sổ, thanh tác vụ và file ứng dụng.\n- Thêm dòng Powered by khiemdztv dưới phiên bản ở góc trái.\n\nGiải nén toàn bộ ZIP, rồi mở TetCountdownApp.exe. Bản này kèm 3 album nhạc. Người đang dùng bản cũ có thể vào Cài đặt > Kiểm tra cập nhật. File resources.neu và update-manifest.json dành cho cập nhật trong app; để đổi cả tên file exe và icon trong Explorer, tải ZIP mới."
+              body: "- Khôi phục đủ 9 bài trong Playlist Nhạc Tết và chỉnh lại thời lượng từng bài.\n- Sửa thời lượng bài cuối trong cả 3 album.\n- Đưa version về góc phải và Powered by khiemdztv về góc trái, không đè chữ.\n- Rút gọn README thành giới thiệu và cách dùng; phóng lớn nhãn phiên bản/lượt tải.\n\nTải TetCountdown2027-Windows-x64.zip, giải nén toàn bộ rồi mở TetCountdownApp.exe. Người dùng bản cũ vào Cài đặt > Kiểm tra cập nhật > Cập nhật và mở lại."
             });
             for (const name of ['TetCountdown2027-Windows-x64.zip', 'resources.neu', 'update-manifest.json', 'SHA256SUMS.txt']) {
               const file = path.join('dist', 'release', tag, name);

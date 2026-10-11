@@ -53,7 +53,7 @@ async function readState(cdp) {
       toast: document.getElementById('toast-text').textContent,
       booted: !!document.getElementById('app-version').textContent,
       credit: document.getElementById('powered-by')?.textContent,
-      creditRect: (()=>{const r=document.querySelector('.app-credit').getBoundingClientRect();return {left:r.left,bottom:r.bottom,width:r.width,height:r.height,viewportHeight:innerHeight};})()
+      creditRect: (()=>{const rect=s=>{const r=document.querySelector(s).getBoundingClientRect();return {left:r.left,right:r.right,top:r.top,bottom:r.bottom};};return {credit:rect('#powered-by'),version:rect('#app-version'),status:rect('.statusbar'),footer:rect('.app-credit'),viewportHeight:innerHeight};})()
     }) : null`,
     returnByValue: true, userGesture: false,
   });
@@ -78,8 +78,11 @@ try {
     assert.equal(state.firstPlayback.userActivated, false, 'Test input unlocked autoplay');
     assert.equal(state.hint, false);
     assert.equal(state.credit,'Powered by khiemdztv');
-    assert(state.creditRect.left >= 0 && state.creditRect.left < 20);
-    assert(state.creditRect.bottom <= state.creditRect.viewportHeight);
+    assert(state.creditRect.credit.right < state.creditRect.version.left);
+    assert(state.creditRect.credit.left - state.creditRect.footer.left < 20);
+    assert(state.creditRect.footer.right - state.creditRect.version.right < 20);
+    assert(state.creditRect.status.bottom <= state.creditRect.footer.top + 1);
+    assert(state.creditRect.footer.bottom <= state.creditRect.viewportHeight);
     assert.equal(state.toast, '');
     await new Promise(resolve => setTimeout(resolve, 650));
     const progressed = await readState(cdp);

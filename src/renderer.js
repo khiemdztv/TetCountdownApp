@@ -433,6 +433,8 @@ const Music = {
   },
 
   endOf(i) {
+    const s = this.songs[i];
+    if (s && Number.isFinite(s.end) && s.end > s.start) return s.end;
     if (i + 1 < this.songs.length) return this.songs[i + 1].start;
     if (this.el && isFinite(this.el.duration) && this.el.duration > 0) return this.el.duration;
     return Infinity;

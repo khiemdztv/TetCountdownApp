@@ -37,7 +37,7 @@ Giữ file ứng dụng và các thư mục đi kèm cùng một chỗ. Bản t�
 | 🧧 **Đếm ngược** | Theo dõi thời gian còn lại đến Tết; chọn xem ngày, giờ, phút hoặc giây. |
 | 🗓️ **Lịch Tết** | Xem lịch âm, lịch dương và các mốc quan trọng quanh Tết. |
 | 💌 **Lời chúc** | Đọc lời chúc, thơ xuân và chọn một lời chúc khác. |
-| 🎵 **Nhạc xuân** | Nghe 48 bài trong 3 album, chọn bài yêu thích hoặc bật phát ngẫu nhiên. |
+| 🎵 **Nhạc xuân** | Nghe 50 bài trong 3 album, chọn bài yêu thích hoặc bật phát ngẫu nhiên. |
 | 🎲 **Trò chơi** | Chơi Bầu Cua, Tài Xỉu, Tiến Lên, Xì Dách và Poker với xu ảo. |
 | 🌸 **Sự kiện trong ngày** | Nhận lời chúc vào những dịp đặc biệt, mỗi ngày chỉ hiện một lần. |
 | ⚙️ **Cài đặt** | Bật/tắt tự mở cùng Windows và kiểm tra phiên bản mới. |

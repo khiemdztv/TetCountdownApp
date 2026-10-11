@@ -51,6 +51,18 @@ const wait = () => page.waitForTimeout(250);
 const until = predicate => page.waitForFunction(predicate, null, { polling: 100 });
 const tab = async name => { await page.locator('[data-tab="' + name + '"]').evaluate(el => el.click()); await wait(); };
 const game = async i => { await page.locator('.game-toolbar [role="tab"]').nth(i).evaluate(el => el.click()); await wait(); };
+async function checkFooter() {
+  const layout = await page.evaluate(() => {
+    const rect = selector => { const r = document.querySelector(selector).getBoundingClientRect(); return {left:r.left,right:r.right,top:r.top,bottom:r.bottom}; };
+    return {credit:rect('#powered-by'),version:rect('#app-version'),status:rect('.statusbar'),footer:rect('.app-credit'),window:rect('.app-window')};
+  });
+  assert(layout.credit.right < layout.version.left, 'Credit overlaps version');
+  assert(layout.credit.left - layout.footer.left < 20, 'Credit must stay left');
+  assert(layout.footer.right - layout.version.right < 20, 'Version must stay right');
+  assert(layout.status.bottom <= layout.footer.top + 1, 'Footer overlaps status');
+  assert(layout.footer.bottom <= layout.window.bottom, 'Footer outside app');
+  (report.footers ||= []).push(layout);
+}
 try {
   await page.waitForTimeout(1800);
   report.viewport = await page.evaluate(() => [innerWidth, innerHeight, devicePixelRatio]);
@@ -61,6 +73,7 @@ try {
       return { height: el.clientHeight, content: el.scrollHeight, overflow: el.scrollHeight - el.clientHeight };
     }, name);
     assert.equal(report.tabs[name].overflow, 0, name + ' overflows');
+    await checkFooter();
   }
   console.log('Three main tabs: no overflow');
   await tab('games');
@@ -178,6 +191,7 @@ try {
       assert(layout.images);
       assert.equal(layout.overflowY, 'auto');
       report.layouts.push(layout);
+      await checkFooter();
       for (let i=0;i<5;i++) {
         await game(i);
         const fit = await page.evaluate(() => { const host=document.querySelector('#games-mount'), surface=document.querySelector('.game-surface');return {host:host.clientHeight,surface:surface.scrollHeight,height:surface.clientHeight}; });

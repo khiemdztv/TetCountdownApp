@@ -503,6 +503,8 @@ const Music = {
     const s = this.songs[i];
     if (!s) return Infinity;
 
+    if (Number.isFinite(s.end) && s.end > s.start) return s.end;
+
     const same = this.sameAlbum(i);
     const pos = same.indexOf(i);
 
@@ -522,18 +524,7 @@ const Music = {
     const s = this.songs[i];
     if (!s) return 0;
     const end = this.endOf(i);
-    // Với bài cuối album, chưa biết độ dài file nên ước lượng theo bài trước
-    if (!isFinite(end)) {
-      const same = this.sameAlbum(i);
-      const pos = same.indexOf(i);
-      if (pos > 0) {
-        const prev = this.songs[same[pos - 1]];
-        const step = s.start - prev.start;
-        return step > 0 ? step : 0;
-      }
-      return 0;
-    }
-    return Math.max(0, end - s.start);
+    return Number.isFinite(end) ? Math.max(0, end - s.start) : 0;
   },
 
   /** Đang phát đúng file của bài này chưa? */
