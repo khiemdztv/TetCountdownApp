@@ -41,8 +41,25 @@
     installButton.textContent = window.NL_RESMODE === 'bundle' ? 'Cập nhật và mở lại' : 'Tải bản mới';
   }
   async function getJSON(url) {
-    const response = await api.net.get(url, { allowRedirects: true, timeout: 15, headers: { 'User-Agent': 'TetCountdownApp-Updater', Accept: 'application/vnd.github+json' } });
+    let response;
+    try {
+      response = await api.net.get(url, { allowRedirects: true, timeout: 15, headers: { 'User-Agent': 'TetCountdownApp-Updater', Accept: 'application/vnd.github+json' } });
+    } catch (error) {
+      // Some Windows networks fail in the runtime HTTP client. Use Windows TLS
+      // and system proxy settings without disabling certificate verification.
+      console.warn('[TetUpdates] Using Windows HTTP fallback', error);
+      const dir = window.NL_PATH + '/.update';
+      await ensureDirectory(dir);
+      const helperPath = dir + '/check-helper.ps1';
+      await api.filesystem.writeFile(helperPath, await api.resources.readFile('/resources/update-check.ps1'));
+      const result = await api.os.execCommand('powershell -NoProfile -NonInteractive -WindowStyle Hidden -ExecutionPolicy Bypass -File ' + quote(helperPath) + ' -Url ' + quote(url));
+      if (result.exitCode !== 0) throw new Error('Không kết nối được GitHub. Vui lòng kiểm tra mạng và thử lại.');
+      const value = JSON.parse(result.stdOut.trim());
+      if (typeof value.bodyBase64 !== 'string' || value.bodyBase64.length > 350000) throw new Error('Phản hồi cập nhật không hợp lệ.');
+      response = { status: value.status, body: new TextDecoder().decode(Uint8Array.from(atob(value.bodyBase64), c => c.charCodeAt(0))) };
+    }
     if (response.status === 404) return null;
+    if (response.status === 403 || response.status === 429) throw new Error('GitHub đang giới hạn lượt kiểm tra. Vui lòng thử lại sau.');
     if (response.status !== 200) throw new Error('Không kết nối được máy chủ cập nhật.');
     if (response.body.length > 256 * 1024) throw new Error('Phản hồi cập nhật quá lớn.');
     return JSON.parse(response.body);
@@ -76,6 +93,12 @@
     if (/["\r\n]/.test(value)) throw new Error('Đường dẫn cập nhật không hợp lệ.');
     return '"' + value + '"';
   };
+  async function ensureDirectory(dir) {
+    try { await api.filesystem.createDirectory(dir); } catch (error) {
+      const existing = await api.filesystem.getStats(dir);
+      if (!existing.isDirectory) throw error;
+    }
+  }
   async function install() {
     if (busy || !manifest) return false;
     if (window.NL_RESMODE !== 'bundle') { await api.os.open(PAGE_URL); return false; }
@@ -88,11 +111,7 @@
       setStatus('Đang tải bản mới. Bạn vẫn có thể sử dụng app…');
       progress.hidden = false;
       progress.value = 0;
-      try { await api.filesystem.createDirectory(dir); } catch (error) {
-        // Existing update directory is expected after the first launch.
-        const existing = await api.filesystem.getStats(dir);
-        if (!existing.isDirectory) throw error;
-      }
+      await ensureDirectory(dir);
       const helper = await api.resources.readFile('/resources/update-helper.ps1');
       const helperPath = dir + '/helper.ps1';
       await api.filesystem.writeFile(helperPath, helper);
@@ -131,11 +150,7 @@
     if (window.NL_RESMODE !== 'bundle') return;
     try {
       const dir = window.NL_PATH + '/.update';
-      try { await api.filesystem.createDirectory(dir); } catch (error) {
-        // Existing update directory is expected after the first launch.
-        const existing = await api.filesystem.getStats(dir);
-        if (!existing.isDirectory) throw error;
-      }
+      await ensureDirectory(dir);
       await api.filesystem.writeFile(dir + '/ready.json', JSON.stringify({ version: currentVersion() }));
       const previous = JSON.parse((await api.filesystem.readFile(dir + '/result.json')).replace(/^\uFEFF/, ''));
       if (previous.status === 'rolled-back') setStatus('Bản mới gặp lỗi. App đã khôi phục phiên bản trước.');

@@ -38,7 +38,7 @@ const DATA_CONVERSIONS = [
 ];
 
 /** File copy nguyên byte (đã là dạng trình duyệt) */
-const PLAIN_COPY = ['styles.css', 'index.html', 'daily-event-popup.css', 'daily-event-popup.js', 'app-updater.css', 'app-updater.js', 'update-helper.ps1'];
+const PLAIN_COPY = ['styles.css', 'index.html', 'daily-event-popup.css', 'daily-event-popup.js', 'app-updater.css', 'app-updater.js', 'update-helper.ps1', 'update-check.ps1'];
 
 /**
  * File đổi tên khi copy.

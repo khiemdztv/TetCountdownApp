@@ -45,7 +45,7 @@ jobs:
             const release = await github.rest.repos.createRelease({
               ...context.repo, tag_name: tag, name: 'TetCountdownApp ' + tag,
               draft: true, prerelease: false,
-              body: "- Khôi phục đủ 9 bài trong Playlist Nhạc Tết và chỉnh lại thời lượng từng bài.\n- Sửa thời lượng bài cuối trong cả 3 album.\n- Đưa version về góc phải và Powered by khiemdztv về góc trái, không đè chữ.\n- Rút gọn README thành giới thiệu và cách dùng; phóng lớn nhãn phiên bản/lượt tải.\n\nTải TetCountdown2027-Windows-x64.zip, giải nén toàn bộ rồi mở TetCountdownApp.exe. Người dùng bản cũ vào Cài đặt > Kiểm tra cập nhật > Cập nhật và mở lại."
+              body: "- Sửa lỗi HTTP error: Failed to read connection khi kiểm tra cập nhật.\n- Thêm kết nối dự phòng để app tải bản mới từ GitHub trên Windows.\n- Giữ nguyên nhạc và cài đặt khi cập nhật.\n\nTải TetCountdown2027-Windows-x64.zip, giải nén toàn bộ rồi mở TetCountdownApp.exe. Nếu bản v1.0.0–v1.0.2 báo lỗi kết nối, hãy tải resources.neu trong bản phát hành này, thoát hẳn app và thay file resources.neu trong thư mục app. Sau lần sửa này có thể cập nhật trực tiếp trong Cài đặt."
             });
             for (const name of ['TetCountdown2027-Windows-x64.zip', 'resources.neu', 'update-manifest.json', 'SHA256SUMS.txt']) {
               const file = path.join('dist', 'release', tag, name);

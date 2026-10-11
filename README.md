@@ -62,6 +62,8 @@ Khi đóng cửa sổ, app vẫn chạy dưới khay hệ thống và nhạc v�
 
 Vào **Cài đặt → Kiểm tra cập nhật**. Nếu có bản mới, bấm **Cập nhật và mở lại**.
 
+**Nếu bản v1.0.0–v1.0.2 báo “HTTP error: Failed to read connection”:** tải `resources.neu` từ [bản mới nhất](https://github.com/khiemdztv/TetCountdownApp/releases/latest), thoát hẳn app bằng menu khay hệ thống → **Thoát**, rồi thay file `resources.neu` trong thư mục app và mở lại. Chỉ cần làm một lần; những lần sau cập nhật ngay trong Cài đặt.
+
 App cũng tự kiểm tra khi khởi động mỗi ngày. Các bản cập nhật trong app giữ lại cài đặt và thư viện nhạc của bạn.
 
 ## Phím tắt
