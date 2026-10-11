@@ -9,9 +9,10 @@
     <img src="https://img.shields.io/github/v/release/khiemdztv/TetCountdownApp?style=for-the-badge&amp;label=Phi%C3%AAn%20b%E1%BA%A3n&amp;labelColor=4b151b&amp;color=d4aa4d" height="32" alt="Phiên bản mới nhất" />
   </a>
   <a href="https://github.com/khiemdztv/TetCountdownApp/releases">
-    <img src="https://img.shields.io/github/downloads/khiemdztv/TetCountdownApp/TetCountdown2027-Windows-x64.zip?style=for-the-badge&amp;displayAssetName=false&amp;label=L%C6%B0%E1%BB%A3t%20t%E1%BA%A3i&amp;labelColor=4b151b&amp;color=bc372e" height="32" alt="Tổng lượt tải app" />
+    <img src="https://img.shields.io/github/downloads/khiemdztv/TetCountdownApp/TetCountdown2027-Windows-x64.zip?style=for-the-badge&amp;displayAssetName=false&amp;label=T%E1%BB%95ng%20l%C6%B0%E1%BB%A3t%20t%E1%BA%A3i&amp;labelColor=4b151b&amp;color=bc372e" height="32" alt="Tổng lượt tải app của tất cả phiên bản" />
   </a>
 
+  <p>Lượt tải được cộng dồn từ tất cả phiên bản của app.</p>
   <p><strong>Powered by khiemdztv</strong></p>
 </div>
 
