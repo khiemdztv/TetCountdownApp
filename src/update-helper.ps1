@@ -62,7 +62,10 @@ try {
   if (!(Test-Path -LiteralPath $appExe -PathType Leaf)) { $appExe = Join-Path $appDir 'TetCountdown2027-win_x64.exe' }
   $arguments = @()
   if ($request.testing) { $arguments = @($request.restartArgs) }
-  $startOptions = @{FilePath=$appExe; WorkingDirectory=$appDir; PassThru=$true; WindowStyle='Hidden'}
+  # The updater process stays hidden, but the user's app must start normally.
+  # SW_HIDE can leave the WebView compositor white/black after DPI resizing.
+  $startOptions = @{FilePath=$appExe; WorkingDirectory=$appDir; PassThru=$true; WindowStyle='Normal'}
+  if ($request.testing) { $startOptions.WindowStyle = 'Hidden' }
   if ($arguments.Count) { $startOptions.ArgumentList=$arguments }
   $newProcess = Start-Process @startOptions
   $healthy = $false

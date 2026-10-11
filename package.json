@@ -1,7 +1,7 @@
 {
   "name": "tet-countdown-2027",
   "productName": "TetCountdownApp",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Dem nguoc Tet Nguyen Dan 2027 - ban Neutralino (53,1 MB) va ban Electron tham chieu",
   "main": "main.js",
   "author": "Tet Countdown",
