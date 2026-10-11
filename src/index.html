@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; media-src 'self' data: file:; font-src 'self'"
+    />
+    <title>Tết 2027 — Đếm ngược Tết Đinh Mùi</title>
+    <link rel="stylesheet" href="../assets/fonts/fonts.css" />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="daily-event-popup.css" />
+    <link rel="stylesheet" href="app-updater.css" />
+    <!-- CSS riêng của gói trò chơi (tự đóng gói trong .tet-games-theme) -->
+    <link rel="stylesheet" href="games/games.css" />
+  </head>
+  <body>
+    <!-- Nen trang tri toan man hinh (hoa roi + phao hoa) -->
+    <div class="ambient" id="ambient" aria-hidden="true">
+      <canvas id="petals"></canvas>
+      <canvas id="fireworks"></canvas>
+    </div>
+
+    <main class="workspace">
+      <div class="desktop-label">
+        <span class="dl-left">✦ MỘT CHÚT SẮC XUÂN, MỘT NĂM AN LÀNH</span>
+        <span class="dl-right">ĐINH MÙI · 2027</span>
+      </div>
+
+      <!-- ============ CUA SO CHINH ============ -->
+      <section class="app-window" id="app-window">
+        <!-- Thanh tieu de: chi con nhan, khong co nut gia
+             (cua so la that, dung thanh tieu de cua Windows) -->
+        <div class="titlebar">
+          <span class="tb-left">
+            <span class="tb-flower">✿</span>
+            Tết 2027
+            <span class="tb-sub">— Đếm ngược ngày đoàn viên</span>
+          </span>
+        </div>
+
+        <!-- Thanh dieu huong -->
+        <nav class="app-nav">
+          <div class="brand">
+            <div class="brand-seal">✦</div>
+            <div class="brand-text">
+              <div class="brand-name">Tết <span class="gold">2027</span></div>
+              <div class="brand-slogan">Chạm xuân · Đón an lành</div>
+            </div>
+          </div>
+          <div class="nav-tabs">
+            <button class="nav-tab active" data-tab="countdown" type="button">
+              <span class="nt-ico">◷</span> Đếm ngược
+            </button>
+            <button class="nav-tab" data-tab="calendar" type="button">
+              <span class="nt-ico">▤</span> Lịch Tết
+            </button>
+            <button class="nav-tab" data-tab="wishes" type="button">
+              <span class="nt-ico">✉</span> Lời chúc
+            </button>
+            <button class="nav-tab" data-tab="games" type="button">
+              <span class="nt-ico">✦</span> Trò chơi
+            </button>
+            <button class="nav-tab icon-only" id="btn-settings" type="button" title="Cài đặt">
+              <span class="nt-ico">⚙</span>
+            </button>
+          </div>
+        </nav>
+
+        <!-- ============ TAB: DEM NGUOC ============ -->
+        <section class="hero tab-panel" data-panel="countdown">
+          <img class="hero-image" src="../assets/img/tet-goat.jpg" alt="Linh vật dê vàng Đinh Mùi giữa hoa mai, hoa đào và đèn lồng Tết" />
+
+          <div class="hero-tools">
+            <button class="hero-tool" id="btn-share" type="button" title="Sao chép lời chúc hôm nay">⧉</button>
+            <button class="hero-tool" id="btn-expand" type="button" title="Toàn màn hình">⤢</button>
+          </div>
+
+          <!-- Den long -->
+          <div class="lanterns" id="lanterns" aria-hidden="true"></div>
+
+          <div class="countdown-content">
+            <div class="eyebrow">XUÂN MỚI ĐANG VỀ</div>
+
+            <h1 class="title-reveal" id="title-reveal" aria-label="Tết Nguyên Đán"></h1>
+
+            <div class="year-wrap">
+              <span class="sparkle s1">✦</span>
+              <span class="sparkle s2">✧</span>
+              <span class="sparkle s3">✦</span>
+              <div class="year-title year-shine" id="year-title" data-text="Đinh Mùi 2027">Đinh Mùi 2027</div>
+            </div>
+
+            <div class="ornament"><span></span>❀<span></span></div>
+
+            <p class="hero-sub script-accent" id="hero-sub">Gác lại âu lo, đếm từng khoảnh khắc đoàn viên.</p>
+
+            <div class="countdown-grid">
+              <div class="time-tile">
+                <div class="time-value" id="days">--</div>
+                <div class="time-label">NGÀY</div>
+              </div>
+              <div class="time-tile">
+                <div class="time-value" id="hours">--</div>
+                <div class="time-label">GIỜ</div>
+              </div>
+              <div class="time-tile">
+                <div class="time-value" id="minutes">--</div>
+                <div class="time-label">PHÚT</div>
+              </div>
+              <div class="time-tile">
+                <div class="time-value" id="seconds">--</div>
+                <div class="time-label">GIÂY</div>
+              </div>
+            </div>
+
+            <!-- Đổi đơn vị hiển thị: tất cả / chỉ ngày / chỉ giờ / ... -->
+            <div class="unit-switch" id="unit-switch" role="group" aria-label="Chọn đơn vị hiển thị">
+              <button class="unit-btn" data-unit="all" type="button" title="Hiện đủ ngày, giờ, phút, giây">Tất cả</button>
+              <button class="unit-btn" data-unit="days" type="button" title="Chỉ hiện ngày">Ngày</button>
+              <button class="unit-btn" data-unit="hours" type="button" title="Chỉ hiện giờ">Giờ</button>
+              <button class="unit-btn" data-unit="minutes" type="button" title="Chỉ hiện phút">Phút</button>
+              <button class="unit-btn" data-unit="seconds" type="button" title="Chỉ hiện giây">Giây</button>
+            </div>
+
+            <div class="lunar-date">
+              <span class="ld-ico">▤</span>
+              <span id="lunar-date">Mùng 1 Tết · Thứ Bảy, 06.02.2027</span>
+            </div>
+
+            <div class="occ-badge" id="occ-badge" hidden></div>
+          </div>
+
+          <div class="mascot-label">
+            ĐINH MÙI
+            <small>Biểu tượng của bình an &amp; sung túc</small>
+          </div>
+        </section>
+
+        <!-- ============ TAB: LICH TET ============ -->
+        <section class="alt-view tab-panel" data-panel="calendar" hidden>
+          <div class="cal-wrap">
+            <!-- Cột trái: lịch tháng -->
+            <div class="cal-left">
+              <div class="av-head">
+                <div>
+                  <div class="eyebrow left">LỊCH XUÂN ĐINH MÙI</div>
+                  <h2 id="cal-title">Tháng 2 · 2027</h2>
+                </div>
+                <div class="cal-nav">
+                  <button class="cal-btn" id="cal-prev" type="button" title="Tháng trước">‹</button>
+                  <button class="cal-btn" id="cal-today" type="button" title="Về tháng hiện tại">Hôm nay</button>
+                  <button class="cal-btn" id="cal-next" type="button" title="Tháng sau">›</button>
+                </div>
+              </div>
+
+              <div class="calendar-grid" id="calendar-grid"></div>
+
+              <div class="cal-legend">
+                <span><i class="lg tet"></i> Ngày Tết</span>
+                <span><i class="lg occ"></i> Lễ Tết</span>
+                <span><i class="lg today"></i> Hôm nay</span>
+                <span class="cal-note">Số nhỏ = âm lịch</span>
+              </div>
+            </div>
+
+            <!-- Cột phải: các mốc Tết + đếm ngược mốc kế tiếp -->
+            <aside class="cal-right">
+              <div class="cd-title">Các mốc Tết 2027</div>
+              <div class="cd-list" id="cal-days-list"></div>
+              <div class="milestone" id="milestone-next"></div>
+            </aside>
+          </div>
+        </section>
+
+        <!-- ============ TAB: LOI CHUC ============ -->
+        <section class="alt-view tab-panel" data-panel="wishes" hidden>
+          <div class="av-head">
+            <div>
+              <div class="eyebrow left">GỬI NHAU ĐIỀU TỐT ĐẸP</div>
+              <h2>Lời chúc đầu xuân</h2>
+            </div>
+            <div class="cal-nav">
+              <button class="cal-btn gold" id="btn-wish-next" type="button">↻ Lời chúc khác</button>
+            </div>
+          </div>
+
+          <div class="wish-card" id="wish-card">
+            <div class="wc-quote">❝</div>
+            <p class="wc-wish" id="wish-text">Đang chuẩn bị lời chúc…</p>
+            <div class="wc-poem" id="wish-poem"></div>
+            <div class="wc-foot">
+              <span class="wc-occ" id="wish-occ"></span>
+              <button class="wc-copy" id="btn-wish-copy" type="button">⧉ Sao chép</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ TAB: TRO CHOI DAN GIAN ============ -->
+        <section class="alt-view tab-panel games-view" data-panel="games" hidden>
+          <!-- Gói trò chơi (React) được gắn vào đây bằng TetGames.mount() -->
+          <div id="games-mount"></div>
+          <!-- Hiện khi bundle chưa nạp xong hoặc lỗi -->
+          <div class="games-loading" id="games-loading">Đang tải trò chơi…</div>
+        </section>
+
+        <!-- ============ TIEN DO NAM ============ -->
+        <section class="journey">
+          <div class="journey-labels">
+            <span id="j-from">Tết Bính Ngọ 2026</span>
+            <span class="gold">Hành trình đến mùa xuân <b id="j-percent">0%</b></span>
+            <span id="j-to">Tết Đinh Mùi 2027</span>
+          </div>
+          <div class="journey-track" id="journey-track">
+            <div class="journey-fill" id="journey-fill"></div>
+          </div>
+          <div class="journey-note">Mỗi ngày trôi qua, gần thêm một ngày trở về.</div>
+        </section>
+
+        <!-- ============ KHOI DUOI: NHAC + KHONG KHI ============ -->
+        <div class="lower-deck">
+          <section class="deck-music">
+            <div class="section-label">♪ GIAI ĐIỆU MÙA XUÂN</div>
+            <div class="music-row">
+              <div class="album-art" id="album-art">
+                <div class="aa-disc"></div>
+              </div>
+              <div class="music-meta">
+                <div class="music-name" id="music-name">Đang tải nhạc Tết…</div>
+                <div class="music-sub">
+                  <span class="sound-bars" id="sound-bars"><i></i><i></i><i></i><i></i></span>
+                  <span id="music-sub">Bài 1/23 · Tuyển tập nhạc Tết</span>
+                </div>
+                <div class="music-progress" id="music-progress">
+                  <div class="mp-fill" id="mp-fill"></div>
+                  <div class="mp-knob" id="mp-knob"></div>
+                </div>
+              </div>
+              <div class="music-controls">
+                <button class="mc-btn" id="btn-prev" type="button" title="Bài trước">‹</button>
+                <button class="mc-btn play" id="btn-play" type="button" title="Phát / Tạm dừng">
+                  <span id="play-ico">▶</span>
+                </button>
+                <button class="mc-btn" id="btn-next" type="button" title="Bài kế tiếp">›</button>
+                <button class="mc-btn" id="btn-shuffle" type="button" title="Phát ngẫu nhiên">⤨</button>
+                <button class="mc-btn" id="btn-list" type="button" title="Danh sách bài">☰</button>
+              </div>
+            </div>
+          </section>
+
+          <div class="deck-divider"></div>
+
+          <section class="deck-effects">
+            <div class="section-label">✦ KHÔNG KHÍ NGÀY TẾT</div>
+            <div class="effects-grid">
+              <div class="effect-item">
+                <label for="sw-petals">✿ Hoa mai, hoa đào</label>
+                <input class="sw" id="sw-petals" type="checkbox" checked />
+              </div>
+              <div class="effect-item">
+                <label for="sw-fireworks">✦ Pháo hoa</label>
+                <input class="sw" id="sw-fireworks" type="checkbox" checked />
+              </div>
+              <div class="effect-item">
+                <label for="sw-motion">〜 Chuyển động</label>
+                <input class="sw" id="sw-motion" type="checkbox" checked />
+              </div>
+              <div class="effect-item">
+                <label for="sw-autostart">⏻ Tự mở cùng Windows</label>
+                <input class="sw" id="sw-autostart" type="checkbox" />
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <!-- ============ THANH TRANG THAI ============ -->
+        <footer class="statusbar">
+          <span><i class="status-dot"></i> <span id="status-left">Chờ đón xuân Đinh Mùi</span></span>
+          <span class="sb-mid"><span id="today-date">…</span> <span class="mx">·</span> <span id="today-time">--:--:--</span></span>
+          <span>Giờ Việt Nam · UTC+7</span>
+        </footer>
+      </section>
+
+      <div class="below-window">Tết là để trở về. <span class="gold">♥</span> Cùng đón một năm mới trọn vẹn.</div>
+    </main>
+
+    <!-- ============ BANG DANH SACH PHAT ============ -->
+    <section class="playlist" id="playlist" hidden>
+      <div class="playlist-head">
+        <span class="playlist-title">Danh sách phát</span>
+        <span class="playlist-count" id="playlist-count"></span>
+        <button class="playlist-close" id="btn-playlist-close" type="button" title="Đóng">✕</button>
+      </div>
+      <ol class="playlist-items" id="playlist-items"></ol>
+    </section>
+
+    <!-- ============ CAI DAT ============ -->
+    <div class="settings-popover" id="settings-popover" hidden>
+      <section class="settings-panel" role="dialog" aria-modal="true" aria-label="Cài đặt">
+        <div class="sp-head">
+          <h2>Cài đặt</h2>
+          <button class="sp-close" id="btn-settings-close" type="button" title="Đóng">✕</button>
+        </div>
+
+        <div class="sp-row">
+          <label for="sw2-autostart">Tự khởi động cùng Windows</label>
+          <input class="sw" id="sw2-autostart" type="checkbox" />
+        </div>
+        <div class="sp-row">
+          <label for="sw2-petals">Hoa mai, hoa đào rơi</label>
+          <input class="sw" id="sw2-petals" type="checkbox" checked />
+        </div>
+        <div class="sp-row">
+          <label for="sw2-fireworks">Pháo hoa</label>
+          <input class="sw" id="sw2-fireworks" type="checkbox" checked />
+        </div>
+        <div class="sp-row">
+          <label for="sw2-motion">Hiệu ứng chuyển động</label>
+          <input class="sw" id="sw2-motion" type="checkbox" checked />
+        </div>
+
+        <div class="sp-vol">
+          <span>Âm lượng nhạc</span>
+          <input class="sp-range" id="sp-volume" type="range" min="0" max="100" value="65" />
+          <span class="sp-vol-val" id="sp-vol-val">65%</span>
+        </div>
+
+        <section class="sp-update" aria-label="Cập nhật ứng dụng">
+          <div class="sp-update-head"><strong>Cập nhật ứng dụng</strong><span class="sp-update-version" id="update-version"></span></div>
+          <p class="sp-update-status" id="update-status" role="status" aria-live="polite">Kiểm tra để nhận những cải tiến mới nhất.</p>
+          <progress id="update-progress" max="100" value="0" aria-label="Tiến độ tải cập nhật" hidden></progress>
+          <div class="sp-update-actions">
+            <button class="sp-link" id="btn-check-update" type="button">Kiểm tra cập nhật</button>
+            <button class="sp-link sp-update-install" id="btn-install-update" type="button" hidden>Cập nhật và mở lại</button>
+          </div>
+        </section>
+
+        <div class="sp-foot">
+          <span>Mùng 1 Tết Đinh Mùi · 06.02.2027</span>
+          <button class="sp-link" id="btn-open-music-folder" type="button">Mở thư mục nhạc</button>
+        </div>
+      </section>
+    </div>
+
+    <!-- Thông báo sự kiện: mặc định ẩn, chỉ hiện một lần mỗi ngày. -->
+    <div class="daily-event-popup" id="daily-event-popup" hidden aria-hidden="true">
+      <section class="daily-event-card" role="dialog" aria-modal="true"
+        aria-labelledby="daily-event-title" aria-describedby="daily-event-content">
+        <button class="daily-event-dismiss" type="button" aria-label="Đóng thông báo" data-daily-event-close>×</button>
+        <div class="daily-event-icon" aria-hidden="true">❀</div>
+        <p class="daily-event-eyebrow">Một ngày đáng nhớ</p>
+        <h2 class="daily-event-title" id="daily-event-title"></h2>
+        <p class="daily-event-content" id="daily-event-content"></p>
+        <button class="daily-event-confirm" id="daily-event-confirm" type="button" data-daily-event-close>Tuyệt vời</button>
+      </section>
+    </div>
+
+    <div class="toast" id="toast" hidden><span id="toast-text"></span></div>
+    <span id="app-version" class="version"></span>
+
+    <!-- Thư viện Neutralino phải nạp trước tiên -->
+    <script src="js/neutralino.js"></script>
+    <script src="lunar.js"></script>
+    <script src="playlist-data.js"></script>
+    <script src="wishes-data.js"></script>
+    <!-- Gói trò chơi dân gian (React đã gộp sẵn trong bundle) -->
+    <script src="games/tet-games.js"></script>
+    <script src="renderer.js"></script>
+    <script src="daily-event-popup.js"></script>
+    <script src="app-updater.js"></script>
+  </body>
+</html>

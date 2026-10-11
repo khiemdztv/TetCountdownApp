@@ -1,0 +1,90 @@
+{
+  "applicationId": "com.tetcountdown.app2027",
+  "version": "1.0.0",
+  "defaultMode": "window",
+  "documentRoot": "/resources/",
+  "url": "/",
+  "exportAuthInfo": false,
+  "enableServer": true,
+  "enableNativeAPI": true,
+  "tokenSecurity": "one-time",
+  "nativeAllowList": [
+    "app.*",
+    "os.*",
+    "filesystem.*",
+    "window.*",
+    "storage.*",
+    "clipboard.*",
+    "debug.log",
+    "events.*",
+    "computer.getDisplays",
+    "net.request",
+    "resources.readFile",
+    "server.mount"
+  ],
+  "logging": {
+    "enabled": true,
+    "writeToLogFile": true
+  },
+  "modes": {
+    "window": {
+      "title": "Tet 2027 - Dem nguoc Tet Dinh Mui",
+      "width": 752,
+      "height": 732,
+      "minWidth": 660,
+      "minHeight": 600,
+      "resizable": true,
+      "exitProcessOnClose": false,
+      "icon": "/resources/icons/appIcon.png",
+      "center": true,
+      "devtools": false,
+      "webviewArgs": "--autoplay-policy=no-user-gesture-required"
+    },
+    "tray": {
+      "icon": "/resources/icons/trayIcon.png",
+      "menuItems": [
+        {
+          "id": "show",
+          "text": "Mo dem nguoc"
+        },
+        {
+          "id": "sep1",
+          "text": "-"
+        },
+        {
+          "id": "trayPlay",
+          "text": "Phat / Tam dung nhac"
+        },
+        {
+          "id": "trayNext",
+          "text": "Bai ke tiep"
+        },
+        {
+          "id": "sep2",
+          "text": "-"
+        },
+        {
+          "id": "autostart",
+          "text": "Tu khoi dong cung Windows",
+          "isChecked": true
+        },
+        {
+          "id": "sep3",
+          "text": "-"
+        },
+        {
+          "id": "quit",
+          "text": "Thoat"
+        }
+      ]
+    }
+  },
+  "cli": {
+    "binaryName": "TetCountdown2027",
+    "resourcesPath": "/resources/",
+    "extensionsPath": "/extensions/",
+    "clientLibrary": "/resources/js/neutralino.js",
+    "binaryVersion": "6.10.0",
+    "clientVersion": "6.10.0"
+  }
+}

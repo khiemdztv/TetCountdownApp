@@ -1,0 +1,12 @@
+/* Cập nhật: cùng tông đỏ và vàng với bảng Cài đặt. */
+.sp-update { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border); }
+.sp-update-head { display: flex; justify-content: space-between; gap: 12px; color: var(--primary); font-size: 12px; }
+.sp-update-version { color: var(--muted-foreground); font-size: 11px; }
+.sp-update-status { margin: 8px 0 12px; color: var(--foreground); font-size: 11px; line-height: 1.7; }
+.sp-update-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.sp-update-install { background: linear-gradient(120deg, #f4d990, #c49344); color: #3a1b11; font-weight: 700; }
+.sp-update button { min-height: 34px; padding: 6px 12px; }
+.sp-update button:disabled { opacity: .6; cursor: wait; }
+.sp-update progress { display: block; width: 100%; height: 5px; margin: 12px 0; accent-color: #e8c170; }
+.sp-update progress[hidden], .sp-update button[hidden] { display: none; }
+.settings-panel { max-height: calc(100dvh - 40px); overflow-y: auto; }

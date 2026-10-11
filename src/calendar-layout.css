@@ -1,0 +1,474 @@
+/* ==================== TAB: LICH TET & LOI CHUC ==================== */
+
+/* Khong cho cuon: moi thu phai vua trong mot man hinh */
+.alt-view {
+  flex: 1;
+  min-height: 0;
+  padding: 11px 16px 9px;
+  background: var(--wine);
+  overflow: hidden;
+}
+
+/* Lich: 2 cot (lich thang ben trai, moc Tet ben phai) */
+.cal-wrap {
+  display: grid;
+  grid-template-columns: minmax(0, 1.95fr) minmax(0, 1fr);
+  gap: 11px;
+  height: 100%;
+  min-height: 0;
+}
+
+.cal-left {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+
+.cal-right {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  padding-left: 13px;
+  border-left: 1px solid var(--border);
+}
+
+.av-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 8px;
+  flex-shrink: 0;
+}
+
+.av-head h2 {
+  font-family: var(--font-display);
+  font-size: 19px;
+  color: var(--primary);
+  margin: 2px 0 0;
+  font-weight: 600;
+  line-height: 1.1;
+}
+
+.eyebrow.left {
+  justify-content: flex-start;
+  font-size: 7px;
+  letter-spacing: 2px;
+}
+
+.eyebrow.left::after {
+  display: none;
+}
+
+.cal-nav {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.cal-btn {
+  height: 22px;
+  padding: 0 8px;
+  font-size: 9.5px;
+  color: var(--foreground);
+  background: rgba(232, 193, 112, 0.1);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  transition: background 0.15s ease, transform 0.14s ease;
+}
+
+.cal-btn:hover {
+  background: rgba(232, 193, 112, 0.24);
+  transform: translateY(-1px);
+}
+
+.cal-btn.gold {
+  color: var(--primary-foreground);
+  background: linear-gradient(180deg, #ffe9a8, #dcae54);
+  border-color: rgba(255, 245, 210, 0.7);
+  font-weight: 600;
+  height: 26px;
+  padding: 0 11px;
+  font-size: 10.5px;
+}
+
+/* -------- Lich thang: tu co gian theo chieu cao con lai -------- */
+
+.calendar-grid {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-auto-rows: minmax(0, 1fr);
+  gap: 3px;
+}
+
+.cal-head {
+  display: grid;
+  place-items: center;
+  font-size: 8px;
+  color: var(--muted-foreground);
+  padding-bottom: 1px;
+}
+
+/*
+ * O lich: so ngay nam goc tren-trai, ngay am lich goc tren-phai,
+ * nhan dip nam duoi cung. Dung grid de ba phan khong de len nhau.
+ */
+.calendar-cell {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  align-items: start;
+  justify-items: center;
+  min-height: 0;
+  padding: 1px 2px;
+  font-size: 10px;
+  color: var(--foreground);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+  transition: background 0.15s ease;
+}
+
+/* So ngay: goc tren trai */
+.calendar-cell > span:first-child {
+  grid-row: 2;
+  align-self: center;
+  font-size: 11px;
+  line-height: 1;
+}
+
+.calendar-cell.blank {
+  background: transparent;
+  border-color: transparent;
+}
+
+/* Ngay am lich: goc tren phai */
+.calendar-cell .lunar-num {
+  position: absolute;
+  top: 1px;
+  right: 2px;
+  font-size: 6.5px;
+  color: var(--muted-foreground);
+  line-height: 1;
+}
+
+.calendar-cell.m1 {
+  background: linear-gradient(160deg, rgba(232, 193, 112, 0.92), rgba(200, 141, 58, 0.88));
+  color: var(--primary-foreground);
+  font-weight: 700;
+  border-color: rgba(255, 245, 210, 0.8);
+}
+
+.calendar-cell.m1 .lunar-num {
+  color: rgba(58, 34, 8, 0.75);
+}
+
+.calendar-cell.occ {
+  background: rgba(232, 193, 112, 0.17);
+  border-color: rgba(232, 193, 112, 0.55);
+}
+
+.calendar-cell.occ .lunar-num {
+  color: var(--primary);
+}
+
+.calendar-cell.today {
+  outline: 2px solid #7ce88a;
+  outline-offset: -2px;
+}
+
+/* Nhan dip: nam duoi cung trong o, khong de len so ngay */
+.calendar-cell .cell-tag {
+  grid-row: 3;
+  justify-self: stretch;
+  text-align: center;
+  font-size: 5.8px;
+  line-height: 1.05;
+  color: var(--primary-foreground);
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.calendar-cell.occ .cell-tag {
+  color: var(--primary);
+}
+
+.cal-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 9px;
+  margin-top: 6px;
+  font-size: 8px;
+  color: var(--muted-foreground);
+  flex-shrink: 0;
+}
+
+.cal-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.lg {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  border: 1px solid var(--border);
+  display: inline-block;
+}
+
+.lg.tet {
+  background: linear-gradient(160deg, #e8c170, #c88d3a);
+}
+
+.lg.occ {
+  background: rgba(232, 193, 112, 0.3);
+  border-color: rgba(232, 193, 112, 0.6);
+}
+
+.lg.today {
+  background: transparent;
+  outline: 2px solid #7ce88a;
+  outline-offset: -2px;
+}
+
+.cal-note {
+  margin-left: auto;
+}
+
+/* -------- Cot phai: danh sach moc Tet -------- */
+
+.cd-title {
+  font-size: 8px;
+  letter-spacing: 1.6px;
+  color: var(--muted-foreground);
+  margin-bottom: 5px;
+  flex-shrink: 0;
+}
+
+.cd-list {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/*
+ * Moi moc xep 1 DONG: ngay duong | ten moc | ngay am lich.
+ * Cot phai hep (khoang 200px) nen ten moc phai duoc cat bot,
+ * neu khong se de len cot ngay am lich.
+ */
+.cd-item {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr) 62px;
+  align-items: baseline;
+  gap: 6px;
+  font-size: 9.5px;
+  padding: 3px 0;
+  border-bottom: 1px dashed rgba(200, 160, 90, 0.16);
+  min-width: 0;
+  line-height: 1.2;
+}
+
+.cd-item .cd-date {
+  color: var(--primary);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  font-size: 9px;
+  white-space: nowrap;
+}
+
+.cd-item .cd-name {
+  min-width: 0;
+  color: var(--foreground);
+  font-size: 9.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cd-item .cd-lunar {
+  color: var(--muted-foreground);
+  font-weight: 400;
+  font-size: 7.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: right;
+}
+
+.cd-item.today .cd-name {
+  color: #7ce88a;
+  font-weight: 700;
+}
+
+.cd-item.today .cd-name {
+  color: #7ce88a;
+  font-weight: 700;
+}
+
+/* The dem nguoc toi moc ke tiep — gon 2 dong */
+.milestone {
+  margin-top: auto;
+  padding: 6px 9px;
+  border-radius: 6px;
+  background: linear-gradient(180deg, rgba(232, 193, 112, 0.16), rgba(61, 21, 18, 0.5));
+  border: 1px solid rgba(232, 193, 112, 0.4);
+  font-size: 8.5px;
+  line-height: 1.35;
+  color: var(--foreground);
+  flex-shrink: 0;
+}
+
+.milestone b {
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.milestone .ms-big {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.milestone .ms-sub {
+  display: block;
+  margin-top: 1px;
+  color: var(--muted-foreground);
+  font-size: 8px;
+}
+
+/* -------- The loi chuc -------- */
+
+/*
+ * Tab Loi chuc la flex column: tieu de co dinh, the loi chuc chiem phan con lai.
+ * Neu dung height:100% cho the thi se tran ra ngoai vi con phan tieu de phia tren
+ * (lam nut "Sao chep" bi cat).
+ */
+.alt-view[data-panel='wishes'] {
+  display: flex;
+  flex-direction: column;
+}
+
+.wish-card {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 13px 17px 10px;
+  border-radius: 8px;
+  background: linear-gradient(180deg, rgba(232, 193, 112, 0.12), rgba(61, 21, 18, 0.55));
+  border: 1px solid rgba(232, 193, 112, 0.34);
+  box-shadow: inset 0 1px 0 rgba(255, 245, 210, 0.16);
+  overflow: hidden;
+}
+
+.wc-quote {
+  position: absolute;
+  top: -5px;
+  left: 11px;
+  font-size: 30px;
+  line-height: 1;
+  color: rgba(232, 193, 112, 0.28);
+  pointer-events: none;
+}
+
+.wc-wish {
+  font-size: 12.5px;
+  font-weight: 600;
+  line-height: 1.45;
+  color: var(--foreground);
+  margin: 0;
+  flex-shrink: 0;
+}
+
+.wc-poem {
+  margin-top: 7px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.wc-poem span {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 11px;
+  line-height: 1.5;
+  color: rgba(247, 234, 208, 0.86);
+}
+
+.wc-poem .poem-source {
+  margin-top: 2px;
+  font-family: var(--font-sans);
+  font-style: normal;
+  font-size: 8.5px;
+  color: var(--muted-foreground);
+}
+
+.wc-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 8px;
+  flex-shrink: 0;
+}
+
+.wc-occ {
+  font-size: 8.5px;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--primary);
+}
+
+.wc-copy {
+  padding: 4px 12px;
+  font-size: 10px;
+  color: var(--primary-foreground);
+  background: linear-gradient(180deg, #ffe9a8, #dcae54);
+  border: 1px solid rgba(255, 245, 210, 0.7);
+  border-radius: 999px;
+  font-weight: 600;
+  transition: transform 0.14s ease, filter 0.16s ease;
+}
+
+.wc-copy:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.06);
+}
+
+.wish-card.swap {
+  animation: wish-swap 0.5s cubic-bezier(0.2, 0.8, 0.3, 1);
+}
+
+
+/* Tieu de album trong danh sach phat */
+.pl-album {
+  list-style: none;
+  margin: 6px 0 2px;
+  padding: 4px 9px;
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--primary);
+  background: rgba(232, 193, 112, 0.1);
+  border-radius: 4px;
+  border-left: 2px solid var(--primary);
+}
+
+.playlist-items > .pl-album:first-child {
+  margin-top: 0;
+}

@@ -1,0 +1,36 @@
+# Thu muc cua trinh quan ly goi
+node_modules/
+
+# San pham dong goi
+dist/
+
+# Anh chup man hinh tam thoi khi kiem tra giao dien
+_*.png
+
+# File cua he dieu hanh
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# Local state, generated native files and original input archives
+native/resources/
+native/*.exe
+native/*.neu
+native/*.log
+native/*.config.json
+!native/neutralino.config.json
+**/.storage/
+**/.update/
+**/.tmp/
+*.log
+*.tmp
+.env
+.env.*
+!.env.example
+verification/
+BAN-GIAO.md
+_giaodien_moi/
+/*.zip
+/*.mp3
+/anh-giao-dien*.png
+_build/dist/

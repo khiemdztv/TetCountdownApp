@@ -1,0 +1,97 @@
+{
+  "name": "tet-countdown-2027",
+  "productName": "Tet Countdown 2027",
+  "version": "1.0.0",
+  "description": "Dem nguoc Tet Nguyen Dan 2027 - ban Neutralino (53,1 MB) va ban Electron tham chieu",
+  "main": "main.js",
+  "author": "Tet Countdown",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "start:native": "native\\TetCountdown2027-win_x64.exe",
+    "sync": "node scripts/sync-native.js && node scripts/apply-calendar-layout.js",
+    "assets": "node scripts/generate-icon.js",
+    "test": "node scripts/test-lunar.js && node scripts/test-daily.js && node scripts/check-encoding.js native && npm run test:games",
+    "test:encoding": "node scripts/check-encoding.js native && node scripts/check-encoding.js src && node scripts/check-encoding.js assets/fonts",
+    "test:fonts": "node scripts/check-font-coverage.js",
+    "size": "node scripts/report-size.js",
+    "dist": "electron-builder --win",
+    "pack": "electron-builder --win --dir",
+    "build:games": "node _build/build.mjs",
+    "test:games": "npm --prefix _build test",
+    "test:ui": "node scripts/test-native-ui.mjs",
+    "test:popup": "node scripts/test-daily-event-popup.mjs",
+    "test:music": "node scripts/test-music-autoplay.mjs",
+    "release:native": "npm run sync && npm run build:games && node scripts/build-native-release.mjs",
+    "test:update": "node scripts/test-app-updater.mjs",
+    "setup:native": "node scripts/setup-native.mjs"
+  },
+  "devDependencies": {
+    "@electron/asar": "^3.4.1",
+    "archiver": "^5.3.2",
+    "electron": "^33.2.1",
+    "electron-builder": "^25.1.8",
+    "extract-zip": "^2.0.1"
+  },
+  "build": {
+    "appId": "com.tetcountdown.app2027",
+    "productName": "Tet Countdown 2027",
+    "files": [
+      "main.js",
+      "preload.js",
+      "src/**/*",
+      "assets/*.ico",
+      "assets/*.png",
+      "assets/*.wav",
+      "!assets/music/**"
+    ],
+    "extraResources": [
+      {
+        "from": "assets/icon.ico",
+        "to": "icon.ico"
+      },
+      {
+        "from": "assets/music",
+        "to": "assets/music"
+      }
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "assets/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "runAfterFinish": true,
+      "shortcutName": "Tet Countdown 2027",
+      "artifactName": "TetCountdown2027-Setup.${ext}"
+    },
+    "directories": {
+      "output": "dist"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/khiemdztv/TetCountdownApp.git"
+  },
+  "homepage": "https://github.com/khiemdztv/TetCountdownApp",
+  "bugs": {
+    "url": "https://github.com/khiemdztv/TetCountdownApp/issues"
+  }
+}
