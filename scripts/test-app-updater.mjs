@@ -85,12 +85,12 @@ async function installedResult(status) {
 }
 try {
   await mkdir(app, { recursive: true });
-  await copyFile(join(root, 'native', 'TetCountdown2027-win_x64.exe'), join(app, 'TetCountdown2027-win_x64.exe'));
+  await copyFile(join(root, 'native', 'TetCountdownApp.exe'), join(app, 'TetCountdownApp.exe'));
   await cp(join(root, 'assets', 'music'), join(app, 'music'), { recursive: true });
   const musicBefore = await Promise.all(['tet-mix.opus','tet-playlist.opus','xuan-chill.opus'].map(async name => hash(await readFile(join(app, 'music', name)))));
   const old = await bundle('1.0.0'), next = await bundle('1.0.1'), broken = await bundle('1.0.2', true);
   await copyFile(old.path, join(app, 'resources.neu'));
-  child = spawn(join(app, 'TetCountdown2027-win_x64.exe'), ['--window-hidden=true','--window-skip-taskbar=true','--url=/index.html?test=1'], {
+  child = spawn(join(app, 'TetCountdownApp.exe'), ['--window-hidden=true','--window-skip-taskbar=true','--url=/index.html?test=1'], {
     cwd: app, windowsHide: true, stdio: 'ignore', env: { ...process.env, WEBVIEW2_USER_DATA_FOLDER: join(work, 'profile') }
   });
   currentPid = child.pid;

@@ -1,16 +1,16 @@
 {
   "name": "tet-countdown-2027",
-  "productName": "Tet Countdown 2027",
-  "version": "1.0.0",
+  "productName": "TetCountdownApp",
+  "version": "1.0.1",
   "description": "Dem nguoc Tet Nguyen Dan 2027 - ban Neutralino (53,1 MB) va ban Electron tham chieu",
   "main": "main.js",
   "author": "Tet Countdown",
   "license": "MIT",
   "scripts": {
     "start": "electron .",
-    "start:native": "native\\TetCountdown2027-win_x64.exe",
+    "start:native": "native\\TetCountdownApp.exe",
     "sync": "node scripts/sync-native.js && node scripts/apply-calendar-layout.js",
-    "assets": "node scripts/generate-icon.js",
+    "assets": "node scripts/prepare-brand-icons.mjs",
     "test": "node scripts/test-lunar.js && node scripts/test-daily.js && node scripts/check-encoding.js native && npm run test:games",
     "test:encoding": "node scripts/check-encoding.js native && node scripts/check-encoding.js src && node scripts/check-encoding.js assets/fonts",
     "test:fonts": "node scripts/check-font-coverage.js",
@@ -24,18 +24,22 @@
     "test:music": "node scripts/test-music-autoplay.mjs",
     "release:native": "npm run sync && npm run build:games && node scripts/build-native-release.mjs",
     "test:update": "node scripts/test-app-updater.mjs",
-    "setup:native": "node scripts/setup-native.mjs"
+    "setup:native": "node scripts/setup-native.mjs",
+    "brand:native": "node scripts/brand-native.mjs",
+    "test:branding": "node scripts/test-native-branding.mjs"
   },
   "devDependencies": {
     "@electron/asar": "^3.4.1",
     "archiver": "^5.3.2",
     "electron": "^33.2.1",
     "electron-builder": "^25.1.8",
-    "extract-zip": "^2.0.1"
+    "extract-zip": "^2.0.1",
+    "resedit": "^1.7.2",
+    "sharp": "^0.34.3"
   },
   "build": {
     "appId": "com.tetcountdown.app2027",
-    "productName": "Tet Countdown 2027",
+    "productName": "TetCountdownApp",
     "files": [
       "main.js",
       "preload.js",
@@ -79,8 +83,8 @@
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
       "runAfterFinish": true,
-      "shortcutName": "Tet Countdown 2027",
-      "artifactName": "TetCountdown2027-Setup.${ext}"
+      "shortcutName": "TetCountdownApp",
+      "artifactName": "TetCountdownApp-Setup.${ext}"
     },
     "directories": {
       "output": "dist"

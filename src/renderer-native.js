@@ -1976,6 +1976,10 @@ async function boot() {
   // Khởi động nhạc trước các bước chỉnh cửa sổ, đọc cài đặt và Startup.
   await Music.init();
 
+  // Reapply branding after WebView2 initialization (also updates older runtimes).
+  await NL.window.setTitle('TetCountdownApp');
+  await NL.window.setIcon('/resources/icons/appIcon.png');
+
   await fitWindowToDesign();
 
   renderTitle();

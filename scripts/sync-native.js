@@ -143,6 +143,7 @@ for (const r of RENAME_COPY) {
 const htmlPath = path.join(RES, 'index.html');
 let html = fs.readFileSync(htmlPath, 'utf8');
 const before = html;
+html = html.replace('../assets/icon.png', 'icons/appIcon.png');
 
 html = html.replace(/\.\.\/assets\/fonts\//g, 'fonts/');
 html = html.replace(/\.\.\/assets\/img\//g, 'img/');

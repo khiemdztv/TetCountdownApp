@@ -57,7 +57,9 @@ try {
   # File.Replace is atomic, leaves one previous version for recovery.
   [IO.File]::Replace($stage, $target, $backup, $true)
   $replaced = $true
-  $appExe = Join-Path $appDir 'TetCountdown2027-win_x64.exe'
+  $appExe = Join-Path $appDir 'TetCountdownApp.exe'
+  # Existing v1.0.0 installations keep their original executable filename.
+  if (!(Test-Path -LiteralPath $appExe -PathType Leaf)) { $appExe = Join-Path $appDir 'TetCountdown2027-win_x64.exe' }
   $arguments = @()
   if ($request.testing) { $arguments = @($request.restartArgs) }
   $startOptions = @{FilePath=$appExe; WorkingDirectory=$appDir; PassThru=$true; WindowStyle='Hidden'}

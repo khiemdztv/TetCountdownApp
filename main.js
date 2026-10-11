@@ -306,7 +306,7 @@ function createWindow() {
     minHeight: 500,
     show: false,
     backgroundColor: '#2a0808',
-    title: 'Đếm ngược Tết Nguyên Đán 2027',
+    title: 'TetCountdownApp',
     icon: path.join(__dirname, 'assets', 'icon.ico'),
     autoHideMenuBar: true,
     webPreferences: {

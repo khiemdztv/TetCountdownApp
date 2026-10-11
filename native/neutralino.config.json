@@ -1,6 +1,6 @@
 {
   "applicationId": "com.tetcountdown.app2027",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "defaultMode": "window",
   "documentRoot": "/resources/",
   "url": "/",
@@ -28,7 +28,7 @@
   },
   "modes": {
     "window": {
-      "title": "Tet 2027 - Dem nguoc Tet Dinh Mui",
+      "title": "TetCountdownApp",
       "width": 752,
       "height": 732,
       "minWidth": 660,
@@ -80,7 +80,7 @@
     }
   },
   "cli": {
-    "binaryName": "TetCountdown2027",
+    "binaryName": "TetCountdownApp",
     "resourcesPath": "/resources/",
     "extensionsPath": "/extensions/",
     "clientLibrary": "/resources/js/neutralino.js",

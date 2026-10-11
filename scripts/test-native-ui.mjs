@@ -24,7 +24,7 @@ if (!endpoint) {
   const config = JSON.parse(await readFile(join(root, 'native', 'neutralino.config.json'), 'utf8'));
   config.modes.window.webviewArgs = (config.modes.window.webviewArgs || '') + ' --remote-debugging-port=' + port;
   await writeFile(configPath, JSON.stringify(config));
-  child = spawn(join(root, 'native', 'TetCountdown2027-win_x64.exe'), ['--config-file=/' + configName, '--window-hidden=true', '--window-skip-taskbar=true', '--url=/index.html?test=1', '--window-title=Tet-UI-Test'], {
+  child = spawn(join(root, 'native', 'TetCountdownApp.exe'), ['--config-file=/' + configName, '--window-hidden=true', '--window-skip-taskbar=true', '--url=/index.html?test=1', '--window-title=Tet-UI-Test'], {
     cwd: join(root, 'native'), windowsHide: true,
     env: { ...process.env, WEBVIEW2_USER_DATA_FOLDER: profile, WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS: '--remote-debugging-port=' + port },
     stdio: 'ignore'

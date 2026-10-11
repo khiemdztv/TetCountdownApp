@@ -5,6 +5,7 @@ import { createHash } from 'node:crypto';
 import { join, resolve } from 'node:path';
 import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
+import { brandNative } from './brand-native.mjs';
 const require = createRequire(import.meta.url);
 const asar = require('@electron/asar');
 const archiver = require('archiver');
@@ -29,15 +30,15 @@ export async function buildRelease({ version, output, includeMusic = true } = {}
   const files = asar.listPackage(bundle);
   if (!files.includes('\\resources\\index.html') && !files.includes('/resources/index.html')) throw new Error('Missing bundled index.html');
   if (files.some(file => /[\\/]music[\\/]/.test(file))) throw new Error('Music must not be inside the update bundle');
-  const portable = join(output, 'TetCountdown2027');
+  const portable = join(output, 'TetCountdownApp');
   await mkdir(portable, { recursive: true });
-  await copyFile(join(root, 'native', 'TetCountdown2027-win_x64.exe'), join(portable, 'TetCountdown2027-win_x64.exe'));
+  await brandNative({output:join(portable,'TetCountdownApp.exe'),version});
   await copyFile(bundle, join(portable, 'resources.neu'));
   await copyFile(join(root, 'LICENSE'), join(portable, 'LICENSE.txt'));
   await cp(join(root, 'vendor'), join(portable, 'licenses'), { recursive: true, filter: path => !path.endsWith('neutralino.js') });
   await cp(join(root, 'assets', 'fonts', 'licenses'), join(portable, 'licenses', 'fonts'), { recursive: true });
   if (includeMusic) await cp(join(root, 'assets', 'music'), join(portable, 'music'), { recursive: true });
-  const guide = 'TẾT COUNTDOWN 2027 — v' + version + '\r\n\r\nGiải nén toàn bộ ZIP vào thư mục riêng, rồi mở TetCountdown2027-win_x64.exe.\r\nKhông di chuyển riêng file exe. Nhạc nằm trong thư mục music.\r\nCài đặt > Kiểm tra cập nhật để nhận bản mới mà không tải lại nhạc.\r\nThoát hẳn app bằng menu khay hệ thống > Thoát.\r\n\r\nSource: https://github.com/khiemdztv/TetCountdownApp\r\n';
+  const guide = 'TẾT COUNTDOWN 2027 — v' + version + '\r\n\r\nGiải nén toàn bộ ZIP vào thư mục riêng, rồi mở TetCountdownApp.exe.\r\nKhông di chuyển riêng file exe. Nhạc nằm trong thư mục music.\r\nCài đặt > Kiểm tra cập nhật để nhận bản mới mà không tải lại nhạc.\r\nThoát hẳn app bằng menu khay hệ thống > Thoát.\r\n\r\nSource: https://github.com/khiemdztv/TetCountdownApp\r\n';
   await writeFile(join(portable, 'HUONG-DAN.txt'), guide, 'utf8');
   const archiveName = 'TetCountdown2027-Windows-x64.zip';
   const archivePath = join(output, archiveName);
@@ -45,7 +46,7 @@ export async function buildRelease({ version, output, includeMusic = true } = {}
     const stream = createWriteStream(archivePath);
     const archive = archiver('zip', { zlib: { level: 9 } });
     stream.on('close', done); stream.on('error', fail); archive.on('error', fail);
-    archive.pipe(stream); archive.directory(portable, 'TetCountdown2027'); archive.finalize();
+    archive.pipe(stream); archive.directory(portable, 'TetCountdownApp'); archive.finalize();
   });
   const hash = file => readFile(file).then(bytes => createHash('sha256').update(bytes).digest('hex'));
   const manifest = { applicationId: config.applicationId, protocol: 1, version, minimumRuntimeVersion: config.cli.binaryVersion,

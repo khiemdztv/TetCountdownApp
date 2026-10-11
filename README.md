@@ -1,4 +1,4 @@
-# Đếm ngược Tết Nguyên Đán 2027 🧧
+# TetCountdownApp 🧧
 
 Ứng dụng desktop đếm ngược tới **Tết Nguyên Đán 2027 — mùng 1 tháng Giêng năm Đinh Mùi,
 tức thứ Bảy ngày 06/02/2027**. Giao diện tông **vàng – đỏ**, bốn tab,
@@ -78,11 +78,11 @@ Giấy phép MIT áp dụng cho mã ứng dụng; xem [thông tin thành phần 
 | **Nền động** | Pháo hoa nổ liên tục, hoa mai vàng và hoa đào hồng rơi, 3 đèn lồng đung đưa |
 | **Tự mở cùng Windows** | Tự bật ở lần chạy đầu; bật/tắt bằng công tắc |
 | **Khay hệ thống** | Đóng cửa sổ vẫn chạy và **vẫn phát nhạc**; menu khay có điều khiển nhạc |
-| **Icon con dê** | Vẽ hoàn toàn bằng toán học, không dùng thư viện đồ hoạ |
+| **Icon dê chibi** | Đồng bộ icon file exe, cửa sổ, thanh tác vụ và khay hệ thống |
 
 ## Cách dùng
 
-1. Mở `native\TetCountdown2027-win_x64.exe`.
+1. Mở `native\TetCountdownApp.exe`.
 2. Nhạc tự phát ngay khi dữ liệu sẵn sàng; bấm ▶ để tạm dừng/phát lại.
 3. Bấm `☰` để xem danh sách 48 bài; bấm bài bất kỳ để phát.
 4. Bấm **✕** hoặc **–** để thu nhỏ xuống khay; nhạc vẫn phát.
@@ -196,7 +196,7 @@ Thanh tiêu đề bên trong app vẫn giữ lại phần nhãn hiệu
 
 ```powershell
 cd native
-.\TetCountdown2027-win_x64.exe
+.\TetCountdownApp.exe
 ```
 
 Nhật ký khởi động ghi vào `native\neutralinojs.log` — mỗi bước đều có dòng `TET: ...`
@@ -236,7 +236,7 @@ npm start
 
 ```
 native/                        BẢN CHÍNH (Neutralino)
-  TetCountdown2027-win_x64.exe  nhân Neutralino 2,34 MB
+  TetCountdownApp.exe  nhân Neutralino 2,34 MB
   neutralino.config.json        cấu hình cửa sổ, khay, quyền API
   resources/
     index.html                  4 tab; viewport thiết kế 752x732, bù DPI
@@ -321,3 +321,10 @@ Danh sách 8 sự kiện ở đầu `src/daily-event-popup.js`: mỗi mục có 
 Khi DOM tải, popup so ngày theo giờ Việt Nam. `localStorage.lastPopupDate` lưu YYYY-MM-DD ngay khi hiện, nên mở lại cùng ngày không hiện nữa và năm sau vẫn có thể hiện. Bản Neutralino lưu thêm qua native storage vì cổng localhost thay đổi sau mỗi lần mở. Nút “Tuyệt vời”, nút × hoặc Escape đóng với fade-out; focus được giữ trong modal và trả lại sau khi đóng.
 
 Sau khi sửa dữ liệu, chạy `npm run sync`. Kiểm thử bằng `npm run test:popup`: dùng phiên Neutralino ẩn riêng, ngày giả lập và khóa lưu riêng, không sửa lịch sử popup của người dùng. Kết quả ở `verification/daily-event-popup.json`. Nhánh Electron/localStorage đã được kiểm tra bằng cửa sổ ẩn chỉ tải HTML/CSS/JS của popup; kết quả ở `verification/daily-event-popup-electron.json`. Các sự kiện âm lịch đang dùng ngày dương lịch do người dùng cung cấp và cần cập nhật theo từng năm.
+
+
+## Tên và icon ứng dụng
+
+Tên cửa sổ và thông tin ProductName/FileDescription trong file exe là `TetCountdownApp`. Icon dê chibi có nguồn ở `assets/branding/goat-chibi.png`, tạo bằng imagegen tích hợp. `npm run assets` sinh ICO 7 kích thước 16–256px và PNG cho cửa sổ/khay; `npm run brand:native` nhúng icon/metadata vào một bản sao nhân Neutralino. `npm run setup:native` và build release cũng áp dụng branding này.
+
+`npm run test:branding` kiểm tra file exe đã đóng gói, tên cửa sổ thật, handle icon small/big và so pixel icon cửa sổ với ảnh chibi, không chụp WebView qua DevTools. Bản v1.0.0 đã cài vẫn cập nhật được tiêu đề và icon cửa sổ/khay qua resources; để đổi tên file exe và icon file trong Explorer, dùng ZIP đầy đủ của v1.0.1. Tên ZIP phát hành giữ nguyên để link và badge cộng lượt tải qua các phiên bản.

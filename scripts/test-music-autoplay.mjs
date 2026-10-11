@@ -20,7 +20,7 @@ async function start() {
   const config = JSON.parse(await readFile(join(root, 'native', 'neutralino.config.json'), 'utf8'));
   config.modes.window.webviewArgs = (config.modes.window.webviewArgs || '') + ' --remote-debugging-port=' + port;
   await writeFile(configPath, JSON.stringify(config));
-  const child = spawn(join(root, 'native', 'TetCountdown2027-win_x64.exe'), ['--config-file=/' + configName, '--window-hidden=true', '--window-skip-taskbar=true', '--url=/index.html?test=1', '--window-title=Tet-Music-Test'], {
+  const child = spawn(join(root, 'native', 'TetCountdownApp.exe'), ['--config-file=/' + configName, '--window-hidden=true', '--window-skip-taskbar=true', '--url=/index.html?test=1', '--window-title=Tet-Music-Test'], {
     cwd: join(root, 'native'), windowsHide: true, stdio: 'ignore',
     env: { ...process.env, WEBVIEW2_USER_DATA_FOLDER: profile, WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS: '--remote-debugging-port=' + port },
   });
@@ -51,7 +51,9 @@ async function readState(cdp) {
       loaded: Music.el.readyState, name: document.getElementById('music-name').textContent,
       hint: !!document.getElementById('play-hint'),
       toast: document.getElementById('toast-text').textContent,
-      booted: !!document.getElementById('app-version').textContent
+      booted: !!document.getElementById('app-version').textContent,
+      credit: document.getElementById('powered-by')?.textContent,
+      creditRect: (()=>{const r=document.querySelector('.app-credit').getBoundingClientRect();return {left:r.left,bottom:r.bottom,width:r.width,height:r.height,viewportHeight:innerHeight};})()
     }) : null`,
     returnByValue: true, userGesture: false,
   });
@@ -75,6 +77,9 @@ try {
     assert(state.volume > 0);
     assert.equal(state.firstPlayback.userActivated, false, 'Test input unlocked autoplay');
     assert.equal(state.hint, false);
+    assert.equal(state.credit,'Powered by khiemdztv');
+    assert(state.creditRect.left >= 0 && state.creditRect.left < 20);
+    assert(state.creditRect.bottom <= state.creditRect.viewportHeight);
     assert.equal(state.toast, '');
     await new Promise(resolve => setTimeout(resolve, 650));
     const progressed = await readState(cdp);

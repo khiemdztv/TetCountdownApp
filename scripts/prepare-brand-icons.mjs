@@ -1,0 +1,24 @@
+import sharp from 'sharp';
+import { readFile, writeFile } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
+const root = fileURLToPath(new URL('../', import.meta.url));
+const source = join(root, 'assets', 'branding', 'goat-chibi.png');
+const sizes = [16, 24, 32, 48, 64, 128, 256];
+const pngs = await Promise.all(sizes.map(size => sharp(source).resize(size, size).png().toBuffer()));
+const header = Buffer.alloc(6); header.writeUInt16LE(1, 2); header.writeUInt16LE(sizes.length, 4);
+const directory = Buffer.alloc(16 * sizes.length);
+let offset = header.length + directory.length;
+sizes.forEach((size,i) => {
+  const entry = i * 16;
+  directory[entry] = size === 256 ? 0 : size;
+  directory[entry+1] = size === 256 ? 0 : size;
+  directory.writeUInt16LE(1,entry+4); directory.writeUInt16LE(32,entry+6);
+  directory.writeUInt32LE(pngs[i].length,entry+8); directory.writeUInt32LE(offset,entry+12);
+  offset += pngs[i].length;
+});
+await writeFile(join(root,'assets','icon.ico'),Buffer.concat([header,directory,...pngs]));
+await writeFile(join(root,'assets','icon.png'),pngs[6]);
+await writeFile(join(root,'assets','tray.png'),pngs[2]);
+await writeFile(join(root,'assets','tray-64.png'),pngs[4]);
+console.log('Chibi goat: ICO 16-256px; app PNG 256px; tray PNG 32/64px.');

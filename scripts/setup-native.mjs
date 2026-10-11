@@ -4,6 +4,7 @@ import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { createRequire } from 'node:module';
+import { brandNative } from './brand-native.mjs';
 const root = fileURLToPath(new URL('../', import.meta.url));
 const require = createRequire(import.meta.url), extract = require('extract-zip');
 const native = join(root, 'native'), res = join(native, 'resources');
@@ -27,4 +28,5 @@ await copyFile(join(root,'vendor','neutralino.js'),join(res,'js','neutralino.js'
 await copyFile(join(root,'assets','icon.png'),join(res,'icons','appIcon.png'));
 await copyFile(join(root,'assets','tray-64.png'),join(res,'icons','trayIcon.png'));
 for (const name of ['fonts','img','music']) await cp(join(root,'assets',name),join(res,name),{recursive:true});
+await brandNative();
 console.log('Native runtime and assets ready. Run npm run sync && npm run build:games.');
