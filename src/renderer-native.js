@@ -543,7 +543,7 @@ const Music = {
 
     this.el = new Audio();
     this.el.preload = 'auto';
-    this.el.volume = this.volume;
+    this.applyVolume();
     // WebView2 đã cho phép autoplay trong neutralino.config.json.
     this.el.muted = false;
 
@@ -651,6 +651,7 @@ const Music = {
 
     this.current = ((i % n) + n) % n;
     const s = this.songs[this.current];
+    this.applyVolume();
 
     const setTime = () => {
       try {
@@ -802,9 +803,14 @@ const Music = {
     this.refresh();
   },
 
+  applyVolume() {
+    const gain = this.songs[this.current]?.playbackGain ?? 1;
+    if (this.el) this.el.volume = this.volume * clamp01(gain);
+  },
+
   setVolume(v) {
     this.volume = clamp01(v);
-    if (this.el) this.el.volume = this.volume;
+    this.applyVolume();
     const pct = Math.round(this.volume * 100);
     if ($('sp-volume')) $('sp-volume').value = String(pct);
     if ($('sp-vol-val')) $('sp-vol-val').textContent = `${pct}%`;
@@ -1526,6 +1532,7 @@ function wireTrayEvents() {
       await applyAutoStart(next);
       showToast(next ? 'Đã bật tự mở cùng Windows' : 'Đã tắt tự mở cùng Windows');
     } else if (id === 'quit') {
+      try { await window.TetGames?.wallet.flush(); } catch (error) { showToast(error.message); return; }
       await NL.app.exit();
     }
   });
@@ -1612,7 +1619,7 @@ function wireButtons() {
 
   window.addEventListener('keydown', (e) => {
     const tag = e.target && e.target.tagName;
-    if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+    if (e.defaultPrevented || e.isComposing || e.ctrlKey || e.altKey || e.metaKey || tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || e.target?.isContentEditable) return;
 
     if (e.key === 'Escape') {
       if (!$('settings-popover').hidden) $('settings-popover').hidden = true;
@@ -1621,7 +1628,8 @@ function wireButtons() {
     }
     if (e.code === 'Space') {
       e.preventDefault();
-      Fireworks.launch();
+      if (!e.repeat) Music.toggle();
+      return;
     }
     if (e.key === 'ArrowRight') Music.next();
     if (e.key === 'ArrowLeft') Music.prev();
@@ -1993,6 +2001,7 @@ async function boot() {
   $('j-from').textContent = `Tết ${window.TetLunar.canChi(TET_YEAR - 1)} ${TET_YEAR - 1}`;
   $('j-to').textContent = `Tết ${CAN_CHI} ${TET_YEAR}`;
 
+  window.TetGames?.wallet.initialize().catch(error => logStep('loi nap vi Xu: ' + error.message));
   await Store.load();
   reflectSettings();
 

@@ -47,7 +47,7 @@ function advance(s:PokerState):PokerState {
 export type PokerAction='fold'|'call'|'raise'|'allin';
 export function pokerAction(s:PokerState,action:PokerAction,target=0):PokerState {
   if(s.done)return s;
-  const p=s.seats[s.player];if(!p||p.folded||!p.stack)return s;
+  const p=s.seats[s.player];if(!p||p.folded||!p.stack&&action!=='fold')return s;
   const due=s.bet-p.street;
   if((action==='raise'||action==='allin'&&p.street+p.stack>s.bet)&&p.acted&&p.street<s.bet)return s; // short all-in does not reopen raising; an all-in call is still legal.
   let pay=action==='fold'?0:action==='call'?Math.min(due,p.stack):action==='allin'?p.stack:target-p.street;

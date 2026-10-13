@@ -94,11 +94,13 @@ const TET_PLAYLIST = [
 /* Gộp thành danh sách album                                           */
 /* ------------------------------------------------------------------ */
 
+// Mức phát đo từ toàn bộ file: khoảng -20 LUFS, đỉnh dưới -2 dBTP.
 const ALBUMS = [
   {
     id: 'bui-cong-nam',
     name: 'Tuyển tập Bùi Công Nam',
     file: 'tet-mix.opus',
+    playbackGain: 0.3589,
     duration: 4572.39,
     songs: BUI_CONG_NAM,
   },
@@ -106,6 +108,7 @@ const ALBUMS = [
     id: 'xuan-chill',
     name: 'Nhạc Xuân Chill 2027',
     file: 'xuan-chill.opus',
+    playbackGain: 0.2786,
     duration: 4329.07,
     songs: XUAN_CHILL,
   },
@@ -113,6 +116,7 @@ const ALBUMS = [
     id: 'tet-playlist',
     name: 'Playlist Nhạc Tết',
     file: 'tet-playlist.opus',
+    playbackGain: 0.309,
     duration: 1765.49,
     songs: TET_PLAYLIST,
   },
@@ -126,7 +130,7 @@ const SONGS = [];
 for (const album of ALBUMS) {
   album.songs.forEach((s, i) => {
     const end = album.songs[i + 1]?.start ?? album.duration;
-    SONGS.push({ ...s, end, albumId: album.id, albumName: album.name, file: album.file });
+    SONGS.push({ ...s, end, albumId: album.id, albumName: album.name, file: album.file, playbackGain: album.playbackGain });
   });
 }
 

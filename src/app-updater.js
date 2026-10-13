@@ -132,6 +132,7 @@
       setStatus('Đã tải xong. Đang mở lại app…');
       // Detached helper waits for this exact process to exit, then replaces the
       // bundle atomically. It restores the previous bundle if startup fails.
+      await window.TetGames?.wallet?.flush();
       const child = await api.os.execCommand(baseCommand + ' -Action Apply', { background: true });
       if (!child.pid) throw new Error('Không khởi động được bộ cập nhật.');
       await api.app.exit();

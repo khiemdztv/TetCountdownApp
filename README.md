@@ -39,7 +39,7 @@ Giữ file ứng dụng và các thư mục đi kèm cùng một chỗ. Bản t�
 | 🗓️ **Lịch Tết** | Xem lịch âm, lịch dương và các mốc quan trọng quanh Tết. |
 | 💌 **Lời chúc** | Đọc lời chúc, thơ xuân và chọn một lời chúc khác. |
 | 🎵 **Nhạc xuân** | Nghe 50 bài trong 3 album, chọn bài yêu thích hoặc bật phát ngẫu nhiên. |
-| 🎲 **Trò chơi** | Chơi Bầu Cua, Tài Xỉu, Tiến Lên, Xì Dách và Poker với xu ảo. |
+| 🎲 **Trò chơi** | Chơi Bầu Cua, Tài Xỉu, Tiến Lên, Xì Dách và Poker với ví Xu dùng chung. |
 | 🌸 **Sự kiện trong ngày** | Nhận lời chúc vào những dịp đặc biệt, mỗi ngày chỉ hiện một lần. |
 | ⚙️ **Cài đặt** | Bật/tắt tự mở cùng Windows và kiểm tra phiên bản mới. |
 
@@ -48,6 +48,7 @@ Giữ file ứng dụng và các thư mục đi kèm cùng một chỗ. Bản t�
 - **Chuyển mục:** chọn tab **Đếm ngược**, **Lịch Tết**, **Lời chúc** hoặc **Trò chơi**.
 - **Đổi cách đếm:** chọn **Tất cả · Ngày · Giờ · Phút · Giây** dưới đồng hồ. App ghi nhớ lựa chọn của bạn.
 - **Nghe nhạc:** nhạc tự phát khi mở app. Dùng nút phát/tạm dừng, bài trước/bài sau và thanh âm lượng để điều chỉnh.
+- **Ví Xu:** cả 5 game dùng chung một số dư, lưu lại khi chuyển game hoặc đóng app. Mỗi đủ 5 giờ tự cộng **1.000 Xu**, kể cả thời gian app đóng. Ván bài dở được giữ lại; xu đặt vào Bầu Cua/Tài Xỉu nhưng chưa lắc sẽ được hoàn khi rời bàn.
 - **Chọn bài:** bấm **☰** để mở danh sách phát; chọn bài bạn muốn nghe. Bật chế độ ngẫu nhiên để đổi không khí.
 - **Đổi lời chúc:** bấm **Lời chúc khác** trong tab Lời chúc.
 - **Tự mở cùng Windows:** vào **Cài đặt** và bật/tắt **Tự mở cùng Windows**.
@@ -73,7 +74,7 @@ App cũng tự kiểm tra khi khởi động mỗi ngày. Các bản cập nhậ
 | Phím | Tác dụng |
 |---|---|
 | **1 / 2 / 3** | Mở Đếm ngược / Lịch Tết / Lời chúc |
-| **P** | Phát hoặc tạm dừng nhạc |
+| **Space / P** | Phát hoặc tạm dừng nhạc |
 | **← / →** | Chuyển bài trước hoặc bài kế tiếp |
 | **N** | Xem lời chúc khác |
 | **U** | Đổi đơn vị đếm ngược |

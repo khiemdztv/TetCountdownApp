@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
-import { mkdir, mkdtemp, writeFile, readFile, unlink } from 'node:fs/promises';
+import { mkdir, mkdtemp, writeFile, readFile, unlink, cp, copyFile } from 'node:fs/promises';
 import { spawn } from 'node:child_process';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
@@ -16,12 +16,16 @@ async function start() {
   const profile = await mkdtemp(join(tmpdir(), 'tet-music-autoplay-'));
   const endpoint = 'http://127.0.0.1:' + port;
   const configName = 'ui-test-' + port + '-' + Date.now() + '.config.json';
-  const configPath = join(root, 'native', configName);
+  const appDir=join(profile,'app');
+  await mkdir(appDir,{recursive:true});
+  await cp(join(root,'native','resources'),join(appDir,'resources'),{recursive:true});
+  await copyFile(join(root,'native','TetCountdownApp.exe'),join(appDir,'TetCountdownApp.exe'));
+  const configPath = join(appDir, configName);
   const config = JSON.parse(await readFile(join(root, 'native', 'neutralino.config.json'), 'utf8'));
   config.modes.window.webviewArgs = (config.modes.window.webviewArgs || '') + ' --remote-debugging-port=' + port;
   await writeFile(configPath, JSON.stringify(config));
-  const child = spawn(join(root, 'native', 'TetCountdownApp.exe'), ['--config-file=/' + configName, '--window-hidden=true', '--window-skip-taskbar=true', '--url=/index.html?test=1', '--window-title=Tet-Music-Test'], {
-    cwd: join(root, 'native'), windowsHide: true, stdio: 'ignore',
+  const child = spawn(join(appDir, 'TetCountdownApp.exe'), ['--config-file=/' + configName, '--window-hidden=true', '--window-skip-taskbar=true', '--url=/index.html?test=1', '--window-title=Tet-Music-Test'], {
+    cwd: appDir, windowsHide: true, stdio: 'ignore',
     env: { ...process.env, WEBVIEW2_USER_DATA_FOLDER: profile, WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS: '--remote-debugging-port=' + port },
   });
   try {
@@ -46,7 +50,7 @@ try {
   session = await start();
   const page = session.page;
   await page.waitForFunction(() => typeof Music !== 'undefined' && Music.el?.readyState >= 2 && document.getElementById('app-version').textContent);
-  await page.evaluate(() => { Music.el.pause(); Music.el.volume = 0; Music.shuffle = false; });
+  await page.evaluate(() => { Music.el.pause(); Music.setVolume(0); Music.shuffle = false; });
   const playlist = await page.evaluate(() => Music.songs.map((s,i) => ({...s,index:i,length:Music.lengthOf(i),display:document.querySelector('.playlist-item[data-index="'+i+'"] .pl-item-time').textContent})));
   const album = playlist.filter(s => s.albumId === 'tet-playlist');
   assert.equal(playlist.length,50);
@@ -65,7 +69,9 @@ try {
   for(const last of playlist.filter((s,i)=>i===playlist.length-1 || playlist[i+1].albumId!==s.albumId)) {
     await page.evaluate(index=>{Music.el.pause();Music.playFrom(index,{autoplay:false});},last.index);
     await page.waitForFunction(file=>Music.el.src.includes(file)&&Music.el.readyState>=2,last.file);
-    const metadata=await page.evaluate(index=>({duration:Music.el.duration,end:Music.endOf(index),length:Music.lengthOf(index),labels:[...document.querySelectorAll('.pl-item-time')].map(el=>el.textContent)}),last.index);
+    const metadata=await page.evaluate(index=>({volume:Music.el.volume,gain:Music.song.playbackGain,duration:Music.el.duration,end:Music.endOf(index),length:Music.lengthOf(index),labels:[...document.querySelectorAll('.pl-item-time')].map(el=>el.textContent)}),last.index);
+    assert.equal(metadata.volume,0,'Switching albums ignored the user mute volume');
+    assert(metadata.gain>0&&metadata.gain<1);
     assert(Math.abs(metadata.duration-metadata.end)<.03,'Album duration disagrees with audio metadata');
     assert.deepEqual(metadata.labels,playlist.map(s=>s.display),'Track lengths changed after loading another album');
     report.albumEnds.push({title:last.title,...metadata,labels:undefined});

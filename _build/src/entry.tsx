@@ -14,8 +14,10 @@ import * as React from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 
 import { FolkGames } from './components/games/FolkGames';
+import { gameWallet, initializeWallet } from './components/games/game-wallet';
 
 export type TetGamesApi = {
+  wallet: { initialize: typeof initializeWallet; flush: () => Promise<void>; getSnapshot: typeof gameWallet.getSnapshot };
   mount: (
     el: HTMLElement,
     opts?: { sound?: boolean; motion?: boolean; petals?: boolean }
@@ -76,7 +78,20 @@ class GameErrorBoundary extends React.Component<
   }
 }
 
+function WalletGames(props: React.ComponentProps<typeof FolkGames>) {
+  const [ready, setReady] = React.useState(gameWallet.getSnapshot().ready);
+  const [error, setError] = React.useState<Error | null>(null);
+  React.useEffect(() => {
+    let active = true;
+    initializeWallet().then(() => { if (active) setReady(true); }).catch(error => { if (active) setError(error instanceof Error ? error : new Error(error.message || JSON.stringify(error))); });
+    return () => { active = false; };
+  }, []);
+  if (error) throw error;
+  return ready ? createElement(FolkGames, props) : createElement('p', { className: 'card-loading' }, 'Đang nạp ví Xu…');
+}
+
 const api: TetGamesApi = {
+  wallet: { initialize: initializeWallet, flush: () => gameWallet.flush(), getSnapshot: gameWallet.getSnapshot },
   /**
    * Gắn tab trò chơi vào một phần tử.
    * Gọi lại nhiều lần trên cùng phần tử sẽ không tạo root trùng.
@@ -105,7 +120,7 @@ const api: TetGamesApi = {
           createElement(
             'div',
             { className: 'tet-games-theme tet-games-tab' },
-            createElement(FolkGames, { sound, motion, petals })
+            createElement(WalletGames, { sound, motion, petals })
           )
         )
       );

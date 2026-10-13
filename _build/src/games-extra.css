@@ -237,3 +237,8 @@
   height: auto;
   aspect-ratio: 1;
 }
+
+/* Ví dùng chung và giờ nhận lì xì tiếp theo. */
+.tet-games-theme .shared-wallet { flex-shrink:0;display:flex;justify-content:space-between;align-items:center;gap:8px;min-height:26px;padding:3px 14px;background:rgba(212,170,77,.07);border-bottom:1px solid var(--border);font-size:10px;color:var(--muted-foreground); }
+.tet-games-theme .shared-wallet strong {color:var(--primary);white-space:nowrap;}
+.tet-games-theme .shared-wallet > span {text-align:right;}

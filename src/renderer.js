@@ -448,7 +448,7 @@ const Music = {
   async init() {
     this.el = new Audio();
     this.el.preload = 'metadata';
-    this.el.volume = this.volume;
+    this.applyVolume();
 
     this.info = await window.tetAPI.getMusic();
     this.songs = Array.isArray(this.info.songs) ? this.info.songs : [];
@@ -528,6 +528,7 @@ const Music = {
     if (!n || !this.el) return;
 
     this.current = ((i % n) + n) % n;
+    this.applyVolume();
     this.el.currentTime = this.songs[this.current].start;
 
     $('music-name').textContent = this.songs[this.current].title;
@@ -620,9 +621,14 @@ const Music = {
     this.refresh();
   },
 
+  applyVolume() {
+    const gain = this.songs[this.current]?.playbackGain ?? 1;
+    if (this.el) this.el.volume = this.volume * clamp01(gain);
+  },
+
   setVolume(v) {
     this.volume = clamp01(v);
-    if (this.el) this.el.volume = this.volume;
+    this.applyVolume();
     const pct = Math.round(this.volume * 100);
     const fill = $('mp-fill');
     void fill;
@@ -1126,7 +1132,7 @@ function wireButtons() {
   // Phím tắt
   window.addEventListener('keydown', (e) => {
     const tag = e.target && e.target.tagName;
-    if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+    if (e.defaultPrevented || e.isComposing || e.ctrlKey || e.altKey || e.metaKey || tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || e.target?.isContentEditable) return;
 
     if (e.key === 'Escape') {
       if (!$('settings-popover').hidden) {
@@ -1139,7 +1145,8 @@ function wireButtons() {
     }
     if (e.code === 'Space') {
       e.preventDefault();
-      Fireworks.launch();
+      if (!e.repeat) Music.toggle();
+      return;
     }
     if (e.key === 'ArrowRight') Music.next();
     if (e.key === 'ArrowLeft') Music.prev();

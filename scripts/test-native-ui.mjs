@@ -1,7 +1,7 @@
 // Integration checks against the actual Neutralino WebView2, not a mock.
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
-import { mkdir, writeFile, mkdtemp, readFile, unlink } from 'node:fs/promises';
+import { mkdir, writeFile, mkdtemp, readFile, unlink, cp, copyFile } from 'node:fs/promises';
 import { spawn } from 'node:child_process';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
@@ -20,12 +20,16 @@ if (!endpoint) {
   const profile = await mkdtemp(join(tmpdir(), 'tet-countdown-ui-'));
   endpoint = 'http://127.0.0.1:' + port;
   const configName = 'ui-test-' + port + '-' + Date.now() + '.config.json';
-  const configPath = join(root, 'native', configName);
+  const appDir=join(profile,'app');
+  await mkdir(appDir,{recursive:true});
+  await cp(join(root,'native','resources'),join(appDir,'resources'),{recursive:true});
+  await copyFile(join(root,'native','TetCountdownApp.exe'),join(appDir,'TetCountdownApp.exe'));
+  const configPath = join(appDir, configName);
   const config = JSON.parse(await readFile(join(root, 'native', 'neutralino.config.json'), 'utf8'));
   config.modes.window.webviewArgs = (config.modes.window.webviewArgs || '') + ' --remote-debugging-port=' + port;
   await writeFile(configPath, JSON.stringify(config));
-  child = spawn(join(root, 'native', 'TetCountdownApp.exe'), ['--config-file=/' + configName, '--window-hidden=true', '--window-skip-taskbar=true', '--url=/index.html?test=1', '--window-title=Tet-UI-Test'], {
-    cwd: join(root, 'native'), windowsHide: true,
+  child = spawn(join(appDir, 'TetCountdownApp.exe'), ['--config-file=/' + configName, '--window-hidden=true', '--window-skip-taskbar=true', '--url=/index.html?test=1', '--window-title=Tet-UI-Test'], {
+    cwd: appDir, windowsHide: true,
     env: { ...process.env, WEBVIEW2_USER_DATA_FOLDER: profile, WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS: '--remote-debugging-port=' + port },
     stdio: 'ignore'
   });
@@ -204,5 +208,5 @@ try {
   assert.deepEqual(errors, []);
   report.passed = true;
   console.log('Square artwork at three native window sizes: passed');
-} catch (error) { report.passed = false; report.failure = error.stack; throw error; }
+} catch (error) { report.gameError=await page.evaluate(()=>window.TetGames?.lastError()).catch(()=>null);console.log('Game error:',report.gameError); report.passed = false; report.failure = error.stack; throw error; }
 finally { await writeFile(out + 'native-ui.json', JSON.stringify(report,null,2)); await browser.close(); if (child) child.kill(); }

@@ -30,3 +30,5 @@ describe('Texas Hold’em',()=>{
  it('advances to flop after everyone calls and checks',()=>{let s=createPoker();for(let i=0;i<5;i++)s=pokerAction(s,'call');expect(s.stage).toBe(1);expect(s.board).toHaveLength(3);});
  it('runs out community cards automatically for all-in showdown',()=>{let s=createPoker([40,40,40,40,40]);for(let i=0;i<10&&!s.done;i++)s=pokerAction(s,'allin');expect(s.done).toBe(true);expect(s.board).toHaveLength(5);expect(s.seats.reduce((n,p)=>n+p.stack,0)).toBe(200);});
 });
+
+it('allows a player to fold after another game spends their available funds',()=>{const s=createPoker();s.player=0;s.seats[0]!.stack=0;expect(pokerAction(s,'fold').seats[0]?.folded).toBe(true);});

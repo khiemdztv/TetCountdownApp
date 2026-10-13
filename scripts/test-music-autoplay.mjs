@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
-import { mkdir, mkdtemp, writeFile, readFile, unlink } from 'node:fs/promises';
+import { mkdir, mkdtemp, writeFile, readFile, unlink, cp, copyFile } from 'node:fs/promises';
 import { spawn } from 'node:child_process';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
@@ -16,12 +16,16 @@ async function start() {
   const profile = await mkdtemp(join(tmpdir(), 'tet-music-autoplay-'));
   const endpoint = 'http://127.0.0.1:' + port;
   const configName = 'ui-test-' + port + '-' + Date.now() + '.config.json';
-  const configPath = join(root, 'native', configName);
+  const appDir=join(profile,'app');
+  await mkdir(appDir,{recursive:true});
+  await cp(join(root,'native','resources'),join(appDir,'resources'),{recursive:true});
+  await copyFile(join(root,'native','TetCountdownApp.exe'),join(appDir,'TetCountdownApp.exe'));
+  const configPath = join(appDir, configName);
   const config = JSON.parse(await readFile(join(root, 'native', 'neutralino.config.json'), 'utf8'));
   config.modes.window.webviewArgs = (config.modes.window.webviewArgs || '') + ' --remote-debugging-port=' + port;
   await writeFile(configPath, JSON.stringify(config));
-  const child = spawn(join(root, 'native', 'TetCountdownApp.exe'), ['--config-file=/' + configName, '--window-hidden=true', '--window-skip-taskbar=true', '--url=/index.html?test=1', '--window-title=Tet-Music-Test'], {
-    cwd: join(root, 'native'), windowsHide: true, stdio: 'ignore',
+  const child = spawn(join(appDir, 'TetCountdownApp.exe'), ['--config-file=/' + configName, '--window-hidden=true', '--window-skip-taskbar=true', '--url=/index.html?test=1', '--window-title=Tet-Music-Test'], {
+    cwd: appDir, windowsHide: true, stdio: 'ignore',
     env: { ...process.env, WEBVIEW2_USER_DATA_FOLDER: profile, WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS: '--remote-debugging-port=' + port },
   });
   try {
@@ -46,7 +50,7 @@ async function stop() { if (session) { await session.browser.close(); session.ch
 async function readState(cdp) {
   const result = await cdp.send('Runtime.evaluate', {
     expression: `typeof Music !== 'undefined' && Music.el ? ({
-      paused: Music.el.paused, muted: Music.el.muted, volume: Music.el.volume,
+      paused: Music.el.paused, muted: Music.el.muted, volume: Music.el.volume, userVolume: Music.volume, gain: Music.song?.playbackGain,
       time: Music.el.currentTime, firstPlayback: Music.firstPlayback,
       loaded: Music.el.readyState, name: document.getElementById('music-name').textContent,
       hint: !!document.getElementById('play-hint'),
@@ -75,6 +79,7 @@ try {
     assert.equal(state.paused, false);
     assert.equal(state.muted, false);
     assert(state.volume > 0);
+    assert(Math.abs(state.volume-state.userVolume*state.gain)<1e-6);
     assert.equal(state.firstPlayback.userActivated, false, 'Test input unlocked autoplay');
     assert.equal(state.hint, false);
     assert.equal(state.credit,'Powered by khiemdztv');
@@ -84,9 +89,10 @@ try {
     assert(state.creditRect.status.bottom <= state.creditRect.footer.top + 1);
     assert(state.creditRect.footer.bottom <= state.creditRect.viewportHeight);
     assert.equal(state.toast, '');
-    await new Promise(resolve => setTimeout(resolve, 650));
-    const progressed = await readState(cdp);
-    assert(progressed.time > state.time + .2, 'Playback time did not advance');
+    await session.page.waitForFunction(()=>!Music.el.seeking&&Music.el.readyState>=3&&!Music.el.paused);
+    const settled=await readState(cdp);
+    await session.page.waitForFunction(time=>Music.el.currentTime>time+.2,settled.time);
+    const progressed=await readState(cdp);
     report.launches.push({ ...state, launchMilliseconds: Date.now() - started, progressed: progressed.time });
     // Pause intentionally: no delayed startup retry should override the user.
     await cdp.send('Runtime.evaluate', { expression: "document.getElementById('btn-play').click()", userGesture: false });
@@ -95,6 +101,21 @@ try {
     await cdp.send('Runtime.evaluate', { expression: "document.getElementById('btn-play').click()", userGesture: false });
     await new Promise(resolve => setTimeout(resolve, 300));
     assert.equal((await readState(cdp)).paused, false);
+    await session.page.evaluate(()=>document.activeElement?.blur());
+    await session.page.keyboard.press('Space');
+    assert.equal((await readState(cdp)).paused,true);
+    await session.page.evaluate(()=>window.dispatchEvent(new KeyboardEvent('keydown',{code:'Space',key:' ',repeat:true,cancelable:true})));
+    assert.equal((await readState(cdp)).paused,true,'Holding Space toggled repeatedly');
+    await session.page.locator('#btn-play').focus();
+    await session.page.keyboard.press('Space');
+    await new Promise(r=>setTimeout(r,100));
+    assert.equal((await readState(cdp)).paused,false,'Focused play button toggled twice');
+    await session.page.locator('#music-volume').focus().catch(()=>{});
+    await session.page.evaluate(()=>{const input=document.createElement('textarea');input.id='shortcut-test-input';document.body.append(input);input.focus();});
+    await session.page.keyboard.press('Space');
+    assert.equal((await readState(cdp)).paused,false,'Typing Space interrupted music');
+    await session.page.evaluate(()=>document.getElementById('shortcut-test-input').remove());
+    report.checks.push('Space pauses/resumes once per press; ignores key repeat and text entry');
     await stop();
   }
   report.checks.push('Two fresh WebView2 profiles: audible autoplay with no user activation');
